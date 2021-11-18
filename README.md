@@ -1,5 +1,5 @@
 # xtdc_babel
-Wrappers, Utilities and Examples for using the xTDC4 with various programming languages.
+Wrappers, Utilities and Examples for using the [xTDC4](https://www.cronologic.de/products/tdcs/xtdc4-pcie) with various programming languages.
 
 ## License
 
