@@ -13,7 +13,7 @@ class CronoXTDC4UgExConan(CronoConanBase):
     # __________________________________________________________________________
     # Values to be reviewed with every new version
     #
-    version = "0.0.2"
+    version = "0.0.1"
     xtdc4_driver_pkg_name = "xtdc4_driver-bin"
     xtdc4_driver_pkg_ref = xtdc4_driver_pkg_name + "/[~0.0.1]"
 
@@ -23,7 +23,7 @@ class CronoXTDC4UgExConan(CronoConanBase):
     name = "xtdc4_ug_example"
     license = "GPL-3.0 License"
     author = "Bassem Ramzy <SanPatBRS@gmail.com>"
-    url = "https://crono.jfrog.io/artifactory/dev/_/_/xtdc4_ug_example" \
+    url = "https://conan.cronologic.de/artifactory/dev/_/_/xtdc4_ug_example" \
         + version
     description = "TDC4 Driver User Guide Example"
     topics = ["cronologic-de", "TDC4", "PCI", "PCIe"]

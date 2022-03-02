@@ -35,7 +35,7 @@ set MSVS_CMAKE_GENERATOR="Visual Studio 16 2019"
 REM set MSVS_CMAKE_GENERATOR="Visual Studio 14 2015"
 
 echo _______________________________________________________________________________
-echo crono: Building x64 Project Buildsystem ...
+echo Crono: Building x64 Project Buildsystem ...
 echo -------------------------------------------------------------------------------
 REM Create x64 build directory, and clean it up if already there
 if exist %X64_BUILD_DIR%\ (
@@ -47,7 +47,7 @@ REM Generate the build system files for x64 using CMake
 cmake -B %X64_BUILD_DIR% -G %MSVS_CMAKE_GENERATOR%  -A x64
 
 echo _______________________________________________________________________________
-echo crono: Building x64 Projects ...
+echo Crono: Building x64 Projects ...
 echo -------------------------------------------------------------------------------
 %MSVS_MSBUILD_DRIVE%
 cd %MSVS_MSBUILD_PATH%
@@ -59,14 +59,14 @@ REM Back to tools
 cd %TOOLS_WIN_DIR%
 if "%CONAN_UPLOAD%" == "Y" (
     echo _______________________________________________________________________________
-    echo crono: Uploading x64 output to conan cache ...
+    echo Crono: Uploading x64 output to conan cache ...
     echo -------------------------------------------------------------------------------
     conan create . -s arch=x86_64 -s build_type=Release
     conan create . -s arch=x86_64 -s build_type=Debug
 )
 
 echo _______________________________________________________________________________
-echo crono: Building Win32 Project Buildsystem ...
+echo Crono: Building Win32 Project Buildsystem ...
 echo -------------------------------------------------------------------------------
 REM Create x86 build directory, and clean it up if already there
 if exist %WIN32_BUILD_DIR%\ (
@@ -78,7 +78,7 @@ REM Generate the build system files for x86 using CMake
 cmake -B %WIN32_BUILD_DIR% -G %MSVS_CMAKE_GENERATOR% -A Win32
 
 echo _______________________________________________________________________________
-echo crono: Building Win32 Projects ...
+echo Crono: Building Win32 Projects ...
 echo -------------------------------------------------------------------------------
 %MSVS_MSBUILD_DRIVE%
 cd %MSVS_MSBUILD_PATH%
@@ -90,14 +90,14 @@ REM Back to tools
 cd %TOOLS_WIN_DIR%
 if "%CONAN_UPLOAD%" == "Y" (
     echo _______________________________________________________________________________
-    echo crono: Uploading Win32 output to conan cache ...
+    echo Crono: Uploading Win32 output to conan cache ...
     echo -------------------------------------------------------------------------------
     conan create . -s arch=x86 -s build_type=Release
     conan create . -s arch=x86 -s build_type=Debug
 )
 
 echo _______________________________________________________________________________
-echo crono: Displaying architecture of libraries built using MSBuild ...
+echo Crono: Displaying architecture of libraries built using MSBuild ...
 echo -------------------------------------------------------------------------------
 %MSVS_MSBUILD_DRIVE%
 cd %DUMPBIN_PATH%
