@@ -1,4 +1,5 @@
 # Base class for Cronologic Conan recipes.
+import os
 from conans import ConanFile, CMake
 from conans.errors import ConanInvalidConfiguration
 
@@ -9,7 +10,14 @@ class CronoConanBase(ConanFile):
     Base class for Cronologic Conan recipes.
     The class provides default behavior of Conan methods for both library and 
     executable outputs, as well as for both Windows and Linux.
-    
+
+    It supports "Main Package", `-bin`, and `-headers` package types.
+
+    Use `conan export-pkg` with `-bin` and `-headers`, as they don't build
+    nor export source.
+
+    For `-bin`, it assumes the binaries path as following:
+    "build/<os>/<arch>/<build_type>/<lib/bin>"
 
     Attributes
     --------------
@@ -32,9 +40,23 @@ class CronoConanBase(ConanFile):
     exports : 
         Conan member attribute to export files, inherited class should export 
         this file in order to be able to upload the package.
+    
+    is_bin : bool
+        Inherited class sets it to True if the package is `-bin`.
+        If set, then, all methods will behave accordingly, e.g. no build, only
+        binary output will be packaged.
+        Default value is `False`.
+
+    is_headers : bool
+        Inherited class sets it to True if the package is `-headers`.
+        If set, then, all methods will behave accordingly, e.g. no build, only
+        include folder will be packaged.
+        Default value is `False`.
     """
 
-    export_source = False 
+    export_source = False
+    is_bin = False
+    is_headers = False
     
     # ==========================================================================
     # Conan Methods
@@ -55,9 +77,14 @@ class CronoConanBase(ConanFile):
         """
         Description
         --------------
+        ConanFile method, used to copy the source code from local machine to 
+        the relevant build/<build-binary> folder of the package. 
         """
         if self.export_source: 
-            self._copy_source(True)
+            self._copy_source(copy_from_local=True)
+        else:
+            # Do Nothing 
+            return 
 
     # __________________________________________________________________________
     #
@@ -66,14 +93,14 @@ class CronoConanBase(ConanFile):
         Description
         --------------
         Builds the project using `CMakeLists.txt` on source forlder `/tool`.
-
         Validates that the package is created for one of the supported operating
-        systems in `supported_os`.
-        It raises `ConanInvalidConfiguration` in case the os is not supported.
         """
         self._crono_validate_os()
 
         cmake = CMake(self)
+        # When package is built, don't allow cmake to publish the package, 
+        # as it will be locked by conan to avoid mutual depenednecy.
+        cmake.definitions["CRONO_PUBLISH_LOCAL_PKG"] = "N"
         cmake.configure(source_folder=self.source_folder + "/tools")
         cmake.build()
 
@@ -96,10 +123,16 @@ class CronoConanBase(ConanFile):
             When set, executable file (.exe, Linux) will be added to the .
             package `/bin` folder. All files under `/lib` on the package will
             be copied as well, asssumed to be needed by the executable.
-        """        
+        """
         self._crono_init()
-        if pack_src:
-            self._copy_source(False)
+        if self.is_headers:
+            # copy from local folder
+            self._copy_source(copy_from_local=False, headers_only=True)  # True:
+        else:
+        # Not `-headers` package
+            if pack_src:
+                self._copy_source(copy_from_local=False)  
+
         if lib_name != "":
             self._crono_copy_lib_output(lib_name)
         if exec_name != "":
@@ -111,10 +144,40 @@ class CronoConanBase(ConanFile):
         """
         Description
         --------------
-        Deploys all files under `/lib` and `/bin` on the package folder.
+        Deploys all files fould under `/lib` and `/bin` on the package folder.
+        In case of is_headers, it deploys files found under`/include` as well.
         """
-        self.copy("lib/*", keep_path=False)  
-        self.copy("bin/*", keep_path=False)  
+        self.copy("lib/*", keep_path=False)
+        self.copy("bin/*", keep_path=False)
+        if self.is_headers:
+            self.copy("include/*", keep_path=False)
+
+    # __________________________________________________________________________
+    #
+    def package_id(self):
+        """
+        Description
+        --------------
+        Although code is compiler-arch-build_type-independent, hence, not 
+        needed in the settings, but `CMake` and other build system integrations, 
+        if they are building, they need a compiler defined, or they will fail.
+        When adding "compiler" to the settings, Linux conan build fails 
+        sometimes compiler version mismatch, the following lines are needed to 
+        achieve some binary compatibility.
+
+        `-headers` package has only `os` left to have a value. 
+        `Main Package` and `-bin` set all compiler settings to "any"
+        """
+        self.output.info("Crono: Setting package to be compiler-independent.")
+        self.info.settings.compiler = "any"
+        self.info.settings.compiler.version = "any"
+        self.info.settings.compiler.libcxx = "any"
+
+        if self.is_headers:
+            self.output.info("Crono: Setting `-headers` package to be "
+                + "arch-build_type-independent.")
+            self.info.settings.arch = "any"
+            self.info.settings.build_type = "any"
 
     # ==========================================================================
     # Cronologic Custom Methods
@@ -127,57 +190,64 @@ class CronoConanBase(ConanFile):
         and `bin_build_rel_path`.
         """
         # All paths are in lower case
-        self.config_build_rel_path=  "build"  \
-                        + "/" + str(self.settings.os).lower() \
-                        + "/" + str(self.settings.arch) \
-                        + "/" + str(self.settings.build_type).lower() 
+        self.config_build_rel_path = "build"  \
+            + "/" + str(self.settings.os).lower() \
+            + "/" + str(self.settings.arch) \
+            + "/" + str(self.settings.build_type).lower()
+
         self.lib_build_rel_path = self.config_build_rel_path + "/lib"
         self.bin_build_rel_path = self.config_build_rel_path + "/bin"
-
     # __________________________________________________________________________
-    # 
+    #
     # Function is used by inherited classes
-    def _copy_source(self, host_context):
+    def _copy_source(self, copy_from_local, headers_only=False):
         """
         Description
         --------------
-        Set source directory indirection, based on the caller context host/package.
-        It refers to source folder using `proj_src_indir` in case of `host_context`
-        is `False`.
+        Set source directory indirection, based on the caller context local/build,
+        and copy files accordingly.
 
         Parameters
         ----------
-        hos_context : bool
-            Set to 'True` you copy to `/export_source`, of `False`, if you copy to 
-            Package Binary Folder.
+        copy_from_local : bool
+            Set to 'True` to copy from project local folder. 
+            Set to `False` to copy from conan binary folder.
         """
-        if bool(host_context) == True:
+        if copy_from_local:
             # Copy from original source code to `/export_source`
             # Current directory is '/tools/conan/'
             proj_src_indir = self.proj_src_indir
+            self.output.info("Crono: copying source from local folder ...")
         else:
             # Copy from `/export_source` to `/package/PackageID`
             # Current directory is `/export_source`
             proj_src_indir = ""
+            self.output.info("Crono: copying source from conan binary folder ...")
 
-        self.copy("src/*", src=proj_src_indir)
-        self.copy("include/*", src=proj_src_indir)
-        self.copy("tools/*", src=proj_src_indir)
-        self.copy("CMakeLists.txt", src=proj_src_indir)
+        # Copy common files to all package types
         self.copy("README.md", src=proj_src_indir)
         self.copy("LICENSE", src=proj_src_indir)
+        self.copy("include/*", src=proj_src_indir)
+        
+        if (headers_only):
+        # All needed files are copied, do nothing more
+            return 
+
+        self.copy("src/*", src=proj_src_indir)
+        self.copy("tools/*", src=proj_src_indir)
         self.copy(".clang-format", src=proj_src_indir)
-        self.copy(".gitignore", src=proj_src_indir)
+        self.copy(".gitignoself.re", src=proj_src_indir)
         # No copy of .vscode, etc...
 
     # __________________________________________________________________________
-    # 
+    #
     def _crono_copy_lib_output(self, lib_name):
         """
         Description
         --------------
-        Calls `self.copy()` for all files of `lib_name`, with extensions (lib, 
-        dll, a) to `/lib` directory.
+        Call `self.copy()` for all files of `lib_name`, with extensions (lib, 
+        dll, a, pdb) to `/lib` directory.
+        Copy the library files from `self.lib_build_rel_path`.
 
         Parameters
         ----------
@@ -190,19 +260,32 @@ class CronoConanBase(ConanFile):
         elif self.settings.os == "Linux":
             lib_file_name = lib_name + ".a"
 
-        self.copy(lib_file_name, src=self.lib_build_rel_path,
-            dst="lib", keep_path=False)
+        # Make sure the file exists to copy
+        lib_full_path = self.build_folder + "/" + self.lib_build_rel_path \
+                + "/" + lib_file_name
+        if not os.path.exists(lib_full_path):
+            raise ConanInvalidConfiguration(
+                "Crono: file <" + lib_full_path + "> is not found." 
+                + " Please make sure project is built on this path."
+                + " You may use --build-folder, or copy binaries on that path.")
+            return 
         
+        # Copy the library
+        self.copy(lib_file_name, src=self.lib_build_rel_path, dst="lib", 
+            keep_path=False)
+
+        # Copy additional additional from the build folder that might be needed
+        # by the library
         if self.settings.os == "Windows":
             # Copy DLL for Windows
-            self.copy(lib_name + ".dll", src=self.lib_build_rel_path,
-                dst="lib", keep_path=False)
+            self.copy(lib_name + ".dll", src=self.lib_build_rel_path, dst="lib",
+                keep_path=False)
 
             if self.settings.build_type == "Debug":
                 # Copy .pdb for Debug
-                self.copy("*.pdb", src=self.lib_build_rel_path,
-                    dst="lib", keep_path=False)
-                    
+                self.copy("*.pdb", src=self.lib_build_rel_path, dst="lib", 
+                    keep_path=False)
+
     # __________________________________________________________________________
     #
     def _crono_copy_bin_output(self, exec_name):
@@ -211,6 +294,7 @@ class CronoConanBase(ConanFile):
         --------------
         Calls `self.copy()` for all files of `exec_name`, with extensions (exe, 
         Linux-no extension) to `/bin` directory.
+        It copies the executable files from `self.bin_build_rel_path`.
 
         Parameters
         ----------
@@ -223,21 +307,34 @@ class CronoConanBase(ConanFile):
         elif self.settings.os == "Linux":
             exec_file_name = exec_name
 
-        self.copy(exec_file_name, src=self.bin_build_rel_path, dst="bin", 
+        exec_full_path = self.build_folder + "/" + self.bin_build_rel_path 
+        self.output.info("Crono: copying executable file <" + exec_full_path + 
+            "> to package" )
+
+        # Make sure the file exists to copy
+        if not os.path.exists(exec_full_path):
+            raise ConanInvalidConfiguration(
+                "Crono: file <" + exec_full_path + "> is not found." 
+                + " Please make sure project is built on this path."
+                + " You may use --build-folder, or copy binaries on that path.")
+            return 
+        self.copy(exec_file_name, src=self.bin_build_rel_path, dst="bin",
             keep_path=False)
 
+        # Copy additional additional from the build folder that might be needed
+        # by the executable
         if self.settings.os == "Windows":
-            self.copy("*.dll", src=self.lib_build_rel_path, dst="bin", 
-                keep_path=False)
+            self.copy("*.dll", src=self.lib_build_rel_path, dst="bin",
+                      keep_path=False)
 
             if self.settings.build_type == "Debug":
                 # Copy .pdb for Debug
-                self.copy("*.pdb", src=self.lib_build_rel_path, dst="bin", 
-                    keep_path=False)
+                self.copy("*.pdb", src=self.lib_build_rel_path, dst="bin",
+                          keep_path=False)
 
         elif self.settings.os == "Linux":
-            self.copy("*.so*", src=self.lib_build_rel_path, dst="bin", 
-                keep_path=False)
+            self.copy("*.so*", src=self.lib_build_rel_path, dst="bin",
+                      keep_path=False)
 
     # __________________________________________________________________________
     #
@@ -300,10 +397,9 @@ class CronoConanBase(ConanFile):
             self._crono_validate_windows_only()
         elif all(x in supported_os for x in ['Linux']):
             self._crono_validate_linux_only()
-        else: 
+        else:
             raise ConanInvalidConfiguration(
-                "Crono: Invalid `" + str(supported_os) + "`, it should have "+\
-                    "either or both `Windows` and `Linux")
+                "Crono: Invalid `" + str(supported_os) + "`, it should have " + 
+                "either or both `Windows` and `Linux")
 
     # __________________________________________________________________________
-    #

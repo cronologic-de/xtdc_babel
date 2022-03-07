@@ -7,8 +7,10 @@ set(CRONO_DEP_PKG_LINUX_REF "xtdc4_driver/[~0.0.1]")
 project(${TARGET_NAME})
 
 # _____________________________________________________________________________
-# Build Windows(x64/x86_64)/Linux(x86_64) `xtdc4_ugex.exe/Linux` executable, 
+# Build Windows(x86/x86_64)/Linux(x86_64) `xtdc4_ugex.exe/Linux` executable, 
 # for (Debug/Release) configurations.
+# Publish conan package to local cache as per `CRONO_PUBLISH_LOCAL_PKG` 
+# argument.
 # `conan install` is used to fetch, build, and deploy the dependency.
 #
 # Dependencies: 
@@ -18,11 +20,14 @@ project(${TARGET_NAME})
 # Prequisites: 
 # - conan remote server(s) that have the traversal dependencies are added 
 #   and authenticated.
+# - Conan recipe is on the same folder.
 # 
-# For Linux: The file accepts `-DCMAKE_BUILD_TYPE=Debug`, 
-# or `-DCMAKE_BUILD_TYPE=Release` at configuration time. Default is`Release`.
-#
-# For Windows: the file accepts values of flag `--config` passed at build time.
+# Arguments:
+# `CRONO_PUBLISH_LOCAL_PKG`: Publish project packages to conan local cache
+# - Passed as `-DCRONO_PUBLISH_LOCAL_PKG=N`
+# - Values:
+#        `N` : Do not publish.
+#    Default : Publish
 # _____________________________________________________________________________
 
 # _____________________________________________________________________________
@@ -130,6 +135,16 @@ IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
                                 " to <${BIN_OUTPUT_DIR}>"
                 COMMAND "copy"  \"${LIB_OUTPUT_DIR}\" \"${BIN_OUTPUT_DIR}\")
                 
+        # Publish packages on conan local cache _______________________________ 
+        IF (NOT CRONO_PUBLISH_LOCAL_PKG STREQUAL "N")
+                add_custom_command(TARGET ${TARGET_NAME} POST_BUILD 
+                        COMMAND "echo" Crono: building and publishing Main Package 
+                                        to conan cache... 
+                        COMMAND "conan" create ${CMAKE_SOURCE_DIR} 
+                                        -s build_type=$<CONFIG> 
+                                        -s arch=${CRONO_GEN_ARCH})
+        ENDIF()
+        
         # Messages ____________________________________________________________
         message(STATUS "Crono: output debug directory is "
                         "<${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}>")
@@ -200,7 +215,17 @@ ELSEIF (CRONO_GEN_PLATFORM STREQUAL "linux")
         # Adjust .o files names  ______________________________________________
         # Remove .cpp from .o file name
         set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON) 
-
+        
+        # Publish packages on conan local cache _______________________________ 
+        IF (NOT CRONO_PUBLISH_LOCAL_PKG STREQUAL "N")
+                add_custom_command(TARGET ${TARGET_NAME} POST_BUILD 
+                        COMMAND "echo" Crono: building and publishing Main Package 
+                                        to conan cache... 
+                        COMMAND "conan" create ${CMAKE_SOURCE_DIR} 
+                                        -s build_type=${CMAKE_BUILD_TYPE}
+                                        -s arch=x86_64)
+        ENDIF()
+        
         # Messages ____________________________________________________________
         message(STATUS "Crono: library output directory is "
                         "<${CMAKE_RUNTIME_OUTPUT_DIRECTORY}>")

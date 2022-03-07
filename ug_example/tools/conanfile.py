@@ -13,7 +13,7 @@ class CronoXTDC4UgExConan(CronoConanBase):
     # __________________________________________________________________________
     # Values to be reviewed with every new version
     #
-    version = "0.0.2"
+    version = "0.0.1"
     xtdc4_driver_pkg_name = "xtdc4_driver-bin"
     xtdc4_driver_pkg_ref = xtdc4_driver_pkg_name + "/[~0.0.1]"
 
