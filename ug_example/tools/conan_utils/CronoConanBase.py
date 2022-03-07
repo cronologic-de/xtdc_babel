@@ -97,6 +97,15 @@ class CronoConanBase(ConanFile):
         """
         self._crono_validate_os()
 
+        if (self.is_bin):
+            self.output.info("Crono: package is `-bin`, binary ouput will " + 
+                "be copied directly from project build folder, without build.")
+            return
+        elif (self.is_headers):
+            self.output.info("Crono: package is `-headers`, include will " + 
+                "be copied directly from project build folder, without build.")
+            return
+
         cmake = CMake(self)
         # When package is built, don't allow cmake to publish the package, 
         # as it will be locked by conan to avoid mutual depenednecy.

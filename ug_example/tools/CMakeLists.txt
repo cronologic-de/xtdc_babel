@@ -78,6 +78,7 @@ set(HEADERS
         ${PROJ_SRC_INDIR}/include/TDC4_interface.h
         ${PROJ_SRC_INDIR}/include/xTDC4_interface.h
         ${PROJ_SRC_INDIR}/include/crono_interface.h
+        ${PROJ_SRC_INDIR}/include/CronoCommon.h
 )
 
 # _____________________________________________________________________________

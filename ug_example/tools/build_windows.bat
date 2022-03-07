@@ -46,7 +46,7 @@ set MSVS_CMAKE_GENERATOR="Visual Studio 16 2019"
 REM set MSVS_CMAKE_GENERATOR="Visual Studio 14 2015"
 
 echo _______________________________________________________________________________
-echo crono: Building x64 Project Buildsystem ...
+echo Crono: Building x64 Project Buildsystem ...
 echo -------------------------------------------------------------------------------
 REM Create x64 build directory, and clean it up if already there
 if exist %X64_BUILD_DIR% (
@@ -61,7 +61,7 @@ cmake -B %X64_BUILD_DIR% -S %BASEDIR% -G %MSVS_CMAKE_GENERATOR% -A x64          
     -DCRONO_PUBLISH_LOCAL_PKG=%PUBLISH_LOCAL_PKG%
 
 echo _______________________________________________________________________________
-echo crono: Building x64 Projects ...
+echo Crono: Building x64 Projects ...
 echo -------------------------------------------------------------------------------
 %MSVS_MSBUILD_DRIVE%
 cd %MSVS_MSBUILD_PATH%
@@ -69,7 +69,7 @@ msbuild %X64_BUILD_DIR%\ALL_BUILD.vcxproj /property:Configuration=Release -t:Reb
 msbuild %X64_BUILD_DIR%\ALL_BUILD.vcxproj /property:Configuration=Debug -t:Rebuild
 
 echo _______________________________________________________________________________
-echo crono: Building Win32 Project Buildsystem ...
+echo Crono: Building Win32 Project Buildsystem ...
 echo -------------------------------------------------------------------------------
 REM Create x86 build directory, and clean it up if already there
 if exist %WIN32_BUILD_DIR%\ (
