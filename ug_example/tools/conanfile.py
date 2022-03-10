@@ -44,6 +44,6 @@ class CronoXTDC4UgExConan(CronoConanBase):
     # __________________________________________________________________________
     #
     def package(self):
-        super().package(pack_src=True, exec_name="xtdc4_ugex")
+        super().package(exec_name="xtdc4_ugex")
 
     # __________________________________________________________________________
