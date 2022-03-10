@@ -121,8 +121,8 @@ IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
         # same pattern of CMAKE_RUNTIME_OUTPUT_DIRECTORY, to be copied to the
         # library output directory {LIB_OUTPUT_DIR}
         add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD 
-                COMMAND "echo" Crono: Fetching xtdc4_driver library using 
-                                conan package ${CRONO_DEP_PKG_WIN_REF}
+                COMMAND "echo" Crono: Fetching and deploying
+                                ${CRONO_DEP_PKG_WIN_REF} library using conan.
                 COMMAND "conan" install ${CRONO_DEP_PKG_WIN_REF}@ 
                                 --install-folder \"${LIB_OUTPUT_DIR}\"
                                 -s build_type=$<CONFIG> 
@@ -141,7 +141,7 @@ IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
                 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD 
                         COMMAND "echo" Crono: exporting Main Package 
                                         to conan local cache... 
-                        COMMAND "conan" export-pkg ${CMAKE_SOURCE_DIR} 
+                        COMMAND "conan" export-pkg ${CMAKE_SOURCE_DIR} --force
                                         -s build_type=$<CONFIG> 
                                         -s arch=${CRONO_GEN_ARCH})
         ENDIF()
@@ -202,9 +202,9 @@ ELSEIF (CRONO_GEN_PLATFORM STREQUAL "linux")
         # same pattern of LIB_OUTPUT_DIR, to be copied to the library output 
         # directory {LIB_OUTPUT_DIR}
         add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD 
-                COMMAND "echo" Crono: Fetching and building xtdc4_driver library 
-                                using conan package ${CRONO_DEP_PKG_LINUX_REF}
-                COMMAND "conan" install ${CRONO_DEP_PKG_LINUX_REF}@ --build
+                COMMAND "echo" Crono: Fetching and deploying
+                                ${CRONO_DEP_PKG_LINUX_REF} library using conan.
+                COMMAND "conan" install ${CRONO_DEP_PKG_LINUX_REF}@
                                 --install-folder ${LIB_OUTPUT_DIR}
                                 -s build_type=${CMAKE_BUILD_TYPE}
                                 -s arch=${CRONO_GEN_ARCH}
@@ -222,7 +222,7 @@ ELSEIF (CRONO_GEN_PLATFORM STREQUAL "linux")
                 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD 
                         COMMAND "echo" Crono: exporting Main Package 
                                         to conan local cache... 
-                        COMMAND "conan" export-pkg ${CMAKE_SOURCE_DIR} 
+                        COMMAND "conan" export-pkg ${CMAKE_SOURCE_DIR} --force
                                         -s build_type=${CMAKE_BUILD_TYPE}
                                         -s arch=x86_64)
         ENDIF()
