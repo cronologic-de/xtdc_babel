@@ -27,7 +27,7 @@ class CronoXTDC4UgExConan(CronoConanBase):
         + version
     description = "TDC4 Driver User Guide Example"
     topics = ["cronologic-de", "TDC4", "PCI", "PCIe"]
-    settings = ["os", "compiler", "build_type", "arch"]
+    settings = ["os", "compiler", "build_type", "arch", "distro"]
 
     # `CronoConanBase` variables initialization and export
     supported_os = ["Windows", "Linux"]
