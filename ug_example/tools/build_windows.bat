@@ -3,21 +3,21 @@ setlocal
 
 echo _______________________________________________________________________________
 echo Overview:
-echo .
+echo.
 echo This file is used on development environment to save time writing down all 
 echo commands to build Windows project using MSVC MSBuild.
 echo All steps and values should be aligned with the build instructions 
 echo mentioned in the readme file 
 echo `https://github.com/cronologic-de/xtdc_babel/blob/main/README.md`.
-echo .
+echo.
 echo Output is found on `../build/bfvs` for x86_64, and `../build/bfvs32` for x86. 
 echo The batch cleans up the folders and rebuilds the code with every run.
-echo .
+echo.
 echo flags:
 echo ======
 echo    -c  Build Conan packages and upload them to local cache.
 echo        Values: `N` for No, otherwise it is assumed as Yes.
-echo .
+echo.
 echo Please review values under `Custom Values` section before you start.
 echo _______________________________________________________________________________
 
