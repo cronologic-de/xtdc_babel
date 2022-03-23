@@ -97,10 +97,10 @@ echo ---------------------------------------------------------------------------
 %MSVS_MSBUILD_DRIVE%
 cd %DUMPBIN_PATH%
 echo Crono: x86_64 Debug Library ...
-dumpbin /headers %X64_BUILD_DIR%\build\windows\x86_64\debug\lib\*.lib | findstr machine
+dumpbin /headers %X64_BUILD_DIR%\build\windows\x86_64\debug\bin\*.exe | findstr machine
 echo Crono: x86_64 Release Library ...
-dumpbin /headers %X64_BUILD_DIR%\build\windows\x86_64\release\lib\*.lib | findstr machine
+dumpbin /headers %X64_BUILD_DIR%\build\windows\x86_64\release\bin\*.exe | findstr machine
 echo Crono: x86 Debug Library ...
-dumpbin /headers %WIN32_BUILD_DIR%\build\windows\x86\debug\lib\*.lib | findstr machine
+dumpbin /headers %WIN32_BUILD_DIR%\build\windows\x86\debug\bin\*.exe | findstr machine
 echo Crono: x86 Release Library ...
-dumpbin /headers %WIN32_BUILD_DIR%\build\windows\x86\release\lib\*.lib | findstr machine
+dumpbin /headers %WIN32_BUILD_DIR%\build\windows\x86\release\bin\*.exe | findstr machine

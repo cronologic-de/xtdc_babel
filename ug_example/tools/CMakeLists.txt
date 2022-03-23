@@ -67,6 +67,11 @@ ENDIF()
 # cd indirection from /tools to the project source code, "." if no shift
 set(PROJ_SRC_INDIR ..)  
 
+# Dependency directory
+set(CRONO_DEP_PKG_DIR ${CMAKE_BINARY_DIR}/dep_pkg)
+set(CRONO_DEP_PKG_INC_DIR ${CRONO_DEP_PKG_DIR}/include)
+set(CRONO_DEP_PKG_LIB_DIR ${CRONO_DEP_PKG_DIR}/lib)
+
 # Include directories paths
 include_directories(${TARGET_NAME} PRIVATE ${PROJ_SRC_INDIR}/include)
 
@@ -110,7 +115,7 @@ IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
         add_library(xtdc4_driver SHARED IMPORTED GLOBAL)
         set_target_properties(xtdc4_driver PROPERTIES 
                 IMPORTED_IMPLIB xtdc4_driver.lib)  
-        link_directories(${LIB_OUTPUT_DIR})
+        link_directories(${CRONO_DEP_PKG_LIB_DIR})
 
         # Build the EXE  ______________________________________________________
         add_executable(${TARGET_NAME} "${SOURCE}" "${HEADERS}")
@@ -119,22 +124,22 @@ IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
         # Deploy `xtdc4_driver` library using conan ___________________________
         # `xtdc4_driver.lib/dll` path in the package is expected to be of the 
         # same pattern of CMAKE_RUNTIME_OUTPUT_DIRECTORY, to be copied to the
-        # library output directory {LIB_OUTPUT_DIR}
+        # library output directory {CRONO_DEP_PKG_DIR}
         add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD 
                 COMMAND "echo" Crono: Fetching and deploying
                                 ${CRONO_DEP_PKG_WIN_REF} library using conan.
                 COMMAND "conan" install ${CRONO_DEP_PKG_WIN_REF}@ 
-                                --install-folder \"${LIB_OUTPUT_DIR}\"
+                                --install-folder \"${CRONO_DEP_PKG_DIR}\"
                                 -s build_type=$<CONFIG> 
                                 -s arch=${CRONO_GEN_ARCH})
         
-        # Copy the `xtdc4_driver.lib/dll` files to tbe /bin for the executable
+        # Copy the `xtdc4_driver.lib/dll` files to the /bin for the executable
         # file to run
         add_custom_command(TARGET ${TARGET_NAME} POST_BUILD 
                 COMMAND "echo"  "Crono: copying xtdc4_driver library"
-                                " from <${LIB_OUTPUT_DIR}>"
+                                " from <${CRONO_DEP_PKG_LIB_DIR}>"
                                 " to <${BIN_OUTPUT_DIR}>"
-                COMMAND "copy"  \"${LIB_OUTPUT_DIR}\" \"${BIN_OUTPUT_DIR}\")
+                COMMAND "copy"  \"${CRONO_DEP_PKG_LIB_DIR}\" \"${BIN_OUTPUT_DIR}\")
                 
         # Publish packages on conan local cache _______________________________ 
         IF (NOT CRONO_PUBLISH_LOCAL_PKG STREQUAL "N")
@@ -194,7 +199,7 @@ ELSEIF (CRONO_GEN_PLATFORM STREQUAL "linux")
         add_library(xtdc4_driver STATIC IMPORTED GLOBAL)
         set_target_properties(xtdc4_driver PROPERTIES 
                 IMPORTED_IMPLIB xtdc4_driver.a)  
-        link_directories(${LIB_OUTPUT_DIR})
+        link_directories(${CRONO_DEP_PKG_LIB_DIR})
 
         # Build the EXE  ______________________________________________________
         add_executable(${TARGET_NAME} "${SOURCE}" "${HEADERS}")
@@ -202,18 +207,18 @@ ELSEIF (CRONO_GEN_PLATFORM STREQUAL "linux")
 
         # Deploy `xtdc4_driver` library using conan ___________________________
         # `xtdc4_driver.a` path in the package is expected to be of the 
-        # same pattern of LIB_OUTPUT_DIR, to be copied to the library output 
-        # directory {LIB_OUTPUT_DIR}
+        # same pattern of CRONO_DEP_PKG_DIR, to be copied to the library output 
+        # directory {CRONO_DEP_PKG_DIR}
         add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD 
                 COMMAND "echo" Crono: Fetching and deploying
                                 ${CRONO_DEP_PKG_LINUX_REF} library using conan.
                 COMMAND "conan" install ${CRONO_DEP_PKG_LINUX_REF}@
-                                --install-folder ${LIB_OUTPUT_DIR}
+                                --install-folder ${CRONO_DEP_PKG_DIR}
                                 -s build_type=${CMAKE_BUILD_TYPE}
                                 -s arch=${CRONO_GEN_ARCH}
                 # Rename the library with prefix `lib` for the linker to find 
                 # it
-                COMMAND "cp"    ${LIB_OUTPUT_DIR}/xtdc4_driver.a 
+                COMMAND "cp"    ${CRONO_DEP_PKG_LIB_DIR}/xtdc4_driver.a 
                                 ${LIB_OUTPUT_DIR}/libxtdc4_driver.a )
                         
         # Adjust .o files names  ______________________________________________
