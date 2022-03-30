@@ -5,11 +5,12 @@
 # For Linux, it installs `crono_dma_driver`, for the builder to be able
 # to build `xtdc4_driver.a` static libary from its source.
 #
-import sys
-sys.path.append("conan_utils/")
-from CronoConanBase import CronoConanBase
+from conans import ConanFile
 
-class CronoXTDC4UgExConan(CronoConanBase):
+class CronoXTDC4UgExConan(ConanFile):
+    python_requires = "crono_utils/0.0.1"
+    python_requires_extend = "crono_utils.CronoConanBase"
+
     # __________________________________________________________________________
     # Values to be reviewed with every new version
     #
@@ -32,7 +33,6 @@ class CronoXTDC4UgExConan(CronoConanBase):
     # `CronoConanBase` variables initialization and export
     supported_os = ["Windows", "Linux"]
     proj_src_indir = ".."
-    exports = "conan_utils/*.py"
     export_source = True
 
     # ==========================================================================
