@@ -1,5 +1,5 @@
 // xtdc4_user_guide_example.cpp:ExampleapplicationforthexTDC4
-#include "CronoCommon.h"
+//#include "CronoCommon.h"
 #include "stdio.h"
 #include "xTDC4_interface.h"
 #if defined(_WIN32) || defined(_WIN64)
@@ -9,6 +9,13 @@
 typedef unsigned int uint32;
 #if defined(_WIN32) || defined(_WIN64)
 typedef unsigned __int64 uint64;
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+#define crono_sleep(x) Sleep(x)
+#else
+#include <unistd.h>
+#define crono_sleep(x) usleep(1000 * x)
 #endif
 
 xtdc4_device *initialize_xtdc4(int buffer_size, int board_id, int card_index) {

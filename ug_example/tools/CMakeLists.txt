@@ -69,16 +69,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 add_executable(${TARGET_NAME} ${PROJ_SRC_INDIR}/src/xtdc4_user_guide_example.cpp)
 
 # Deploy `xtdc4_driver` library using conan ___________________________________
-# `xtdc4_driver.lib/dll/a` path in the package is expected to be copied to the
-# library output directory {CRONO_DEP_PKG_DIR}
-IF(CRONO_GEN_PLATFORM STREQUAL "windows")
-        set(CRONO_DEP_PKG_REF "xtdc4_driver-bin/[~0.0.1]")
-ELSE()
-        set(CRONO_DEP_PKG_REF "xtdc4_driver/[~0.0.1]")
-ENDIF()
 add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD 
         COMMAND  "echo" Crono: Fetching and deploying ${CRONO_DEP_PKG_REF} library using conan.
-        COMMAND "conan" install ${CRONO_DEP_PKG_REF}@  --install-folder \"${CRONO_DEP_PKG_DIR}\"
+        COMMAND "conan" install ${CMAKE_SOURCE_DIR} -g deploy --install-folder \"${CRONO_DEP_PKG_DIR}\"
                 -s build_type=$<CONFIG> -s arch=${CRONO_GEN_ARCH})
 
 # Windows-specific Configurations _____________________________________________
