@@ -48,14 +48,16 @@ ENDIF()
 set(PROJ_SRC_INDIR ..)  
 
 # Dependency directory
+set(CRONO_DEP_LIB_NAME xtdc4_driver-bin)
 set(CRONO_DEP_PKG_DIR ${CMAKE_BINARY_DIR}/dep_pkg)
-set(CRONO_DEP_PKG_LIB_DIR ${CRONO_DEP_PKG_DIR}/lib)
+set(CRONO_DEP_PKG_LIB_DIR ${CRONO_DEP_PKG_DIR}/${CRONO_DEP_LIB_NAME}/lib)
+set(CRONO_DEP_PKG_INC_DIR ${CRONO_DEP_PKG_DIR}/${CRONO_DEP_LIB_NAME}/include)
 
 # Include and Link directories paths
 include_directories(${TARGET_NAME} PRIVATE 
         ${PROJ_SRC_INDIR}/include
         # Include dependency folder
-        ${CRONO_DEP_PKG_DIR}/include
+        ${CRONO_DEP_PKG_INC_DIR}
 )
 link_directories(${CRONO_DEP_PKG_LIB_DIR})
 
