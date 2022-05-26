@@ -27,12 +27,12 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 2. [`CMake`](https://cmake.org/install/) is installed.
 
 ### 1. Build Using Visual Studio
-The project is built by using `Visual Studio "C++ CMake Tools` that reads speciificaitions got from `tools\CMakeSettings.json`, and configures `CMakeLists.txt`, then  builds the generated buildsystem files.
-
-The steps mentioned here are compatible with Visual Studio 2019 and above.
+- The project is built by using `Visual Studio "C++ CMake Tools` that reads speciificaitions got from `tools\CMakeSettings.json`, and configures `CMakeLists.txt`, then  builds the generated buildsystem files.
+- `CMakeSettings.json` and the steps mentioned here are compatible with Visual Studio 2022. 
 
 ### Additional Prerequisites
-1. [Visual Studio "C++ CMake Tools"](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio) is installed.
+1. Visual Studio 2022 is installed.
+2. [Visual Studio "C++ CMake Tools"](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio) is installed.
 
 #### Open the Project 
 1. Open Visual Studio.
