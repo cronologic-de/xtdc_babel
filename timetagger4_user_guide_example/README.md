@@ -3,9 +3,9 @@
 ## About
 
 ### Overview
-This directory contains a project to compile the C++ example show in the user guide of the cronologic xTDC4 time-to-digital converter.
+This directory contains a project to compile the C++ example show in the user guide of the cronologic TimeTagger time-to-digital converter.
 
-You can download the user guide from the [product web page](https://www.cronologic.de/products/tdcs/xtdc4-pcie).
+You can download the user guide from the [product web page](https://www.cronologic.de/products/tdcs/timetagger).
 
 ### Copyright and Licence
 This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
@@ -23,11 +23,11 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 ## Build the Project on Windows
 
 ### Prerequisites
-1. Copy the `driver` folder from the `xTDC4` installation folder (e.g. on <_C:\Program Files\cronologic\xTDC4_>) to the `xTDC4_user_guide_example` folder. If the driver not already installed, you can install it from [product web pag](https://www.cronologic.de/products/tdcs/xtdc4-pcie).
+1. Copy the `driver` folder from the `TimeTagger` installation folder (e.g. on <_C:\Program Files\cronologic\TimeTagger4_>) to the `timetagger4_user_guide_example` folder. If the driver not already installed, you can install it from [product web pag](https://www.cronologic.de/products/tdcs/timetagger).
 2. [`CMake`](https://cmake.org/install/) is installed.
 
 ### Output File
-The built output file `xtdc4_ugex.exe` is created under `xTDC4_user_guide_example\driver` sub-directory as following:
+The built output file `timetagger4_user_guide_example` is created under `timetagger4_user_guide_example\driver` sub-directory as following:
 | Architecture | Configuration | Sub-directory | 
 | ------------ | ------------- | ------------- | 
 | `x64` | Debug   | `x64\Debug`   | 
@@ -35,7 +35,6 @@ The built output file `xtdc4_ugex.exe` is created under `xTDC4_user_guide_exampl
 | `x86` | Debug   | `x86\Debug`   |
 | `x86` | Release | `x86\Release` |
 * You need to copy the DLLs from the uppoer folder (e.g. `x64` and `x86`) to the sub-directory to be able to run the executable if the DLLs are not already on the path.
-
 
 ### 1. Build Using Visual Studio
 - The project is built by using `Visual Studio "C++ CMake Tools` that reads speciificaitions got from `tools\CMakeSettings.json`, and configures `CMakeLists.txt`, then  builds the generated buildsystem files.
@@ -48,10 +47,10 @@ The built output file `xtdc4_ugex.exe` is created under `xTDC4_user_guide_exampl
 #### Open the Project 
 1. Open Visual Studio.
 2. Select `Open a local folder`.
-3. Select the project folder, i.e. `xTDC4_user_guide_example`.
+3. Select the project folder, i.e. `timetagger4_user_guide_example`.
 4. If "CMake Integration" message _to enable Visual Studio's CMake support with this workspace_ is displayed
    1. Select `Enable and set source directory` button.
-   2. In "Select CMakeLists.txt" Dialog, navigate to the <path\to\project\folder>\tools, and open our project `CMakeLists.txt` file, i.e. `xTDC4_user_guide_example\tools\CMakeLists.txt`
+   2. In "Select CMakeLists.txt" Dialog, navigate to the <path\to\project\folder>\tools, and open our project `CMakeLists.txt` file, i.e. `timetagger4_user_guide_example\tools\CMakeLists.txt`
 
 #### Configure `CMake`
 Configure `CMake` to create _Project Buildsystem_ files, either:
