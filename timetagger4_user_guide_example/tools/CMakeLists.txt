@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12) 
-set(CRONO_TARGET_NAME "xtdc4_ugex")
+set(CRONO_TARGET_NAME "timetagger4_user_guide_example")
 project(${CRONO_TARGET_NAME})
 # $$
 # _____________________________________________________________________________
@@ -85,12 +85,12 @@ IF(     NOT EXISTS "${CRONO_DEP_PKG_LIB_DIR}"
      OR NOT EXISTS "${CRONO_DEP_PKG_INC_DIR}"
 ) 
         message(FATAL_ERROR 
-                "Crono: Please copy driver installation folder <xTDC4\driver> to the project root.")
+                "Crono: Please copy driver installation folder <TimeTagger4\driver> to the project root.")
 ENDIF()
         
 # Add the EXE ytarget  ________________________________________________________
 add_executable(${CRONO_TARGET_NAME} 
-        ${PROJ_SRC_INDIR}/src/xtdc4_user_guide_example.cpp)
+        ${PROJ_SRC_INDIR}/src/timetagger4_user_guide_example.cpp)
 
 # Windows-specific Configurations _____________________________________________
 IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
