@@ -1,4 +1,4 @@
-# xTDC4 User Guide Example
+# TimeTagger4 User Guide Example
 
 ## About
 
