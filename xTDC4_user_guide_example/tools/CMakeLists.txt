@@ -74,6 +74,9 @@ ELSEIF(CRONO_GEN_ARCH STREQUAL "x86_64" AND CRONO_GEN_PLATFORM STREQUAL "windows
                 xtdc4_driver_64.lib)  
         set(CRONO_DEP_PKG_LIB_DIR     ${CRONO_DEP_PKG_DIR}/x64)
         set(CRONO_XTDC4_LIB_NAME      xtdc4_driver_64.lib)
+ELSEIF(CRONO_GEN_PLATFORM STREQUAL "linux")
+        set(CRONO_DEP_PKG_LIB_DIR     ${CRONO_DEP_PKG_DIR}/x64)
+        set(CRONO_XTDC4_LIB_NAME      xtdc4_driver.a)
 ENDIF()
 link_directories(${CRONO_DEP_PKG_LIB_DIR})
 
@@ -85,7 +88,8 @@ IF(     NOT EXISTS "${CRONO_DEP_PKG_LIB_DIR}"
      OR NOT EXISTS "${CRONO_DEP_PKG_INC_DIR}"
 ) 
         message(FATAL_ERROR 
-                "Crono: Please copy driver installation folder <xTDC4\driver> to the project root.")
+                "Crono: Please copy driver installation folder driver to the project root. "
+"Lib: <${CRONO_DEP_PKG_LIB_DIR}>, Include: <${CRONO_DEP_PKG_INC_DIR}>.")
 ENDIF()
         
 # Add the EXE ytarget  ________________________________________________________
