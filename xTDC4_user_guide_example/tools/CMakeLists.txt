@@ -83,7 +83,7 @@ IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
 # Linux-specific Configurations _______________________________________________
 ELSEIF (CRONO_GEN_PLATFORM STREQUAL "linux") 
         # Compilation options _________________________________________________ 
-        add_compile_options(-Wall $<$<CONFIG:Debug>:-g>)
+        add_compile_options(-fPIC -Wall $<$<CONFIG:Debug>:-g>)
         add_compile_definitions($<$<CONFIG:Debug>:CRONO_DEBUG_ENABLED>)
         if (NOT CMAKE_BUILD_TYPE)
                 message(STATUS  
