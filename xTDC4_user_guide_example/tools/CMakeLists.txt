@@ -1,30 +1,9 @@
 cmake_minimum_required(VERSION 3.12) 
 set(CRONO_TARGET_NAME "xtdc4_ugex")
 project(${CRONO_TARGET_NAME})
-# $$
 # _____________________________________________________________________________
 # Build Windows(x86/x86_64)/Linux(x86_64) `xtdc4_ugex.exe/Linux` executable, 
 # for (Debug/Release) configurations.
-# Publish conan package to local cache as per `CRONO_PUBLISH_LOCAL_PKG` 
-# argument.
-# `conan install` is used to fetch, build, and deploy the dependency.
-#
-# Dependencies: 
-# - 'crono_project_tools'
-# - `xtdc4_driver-bin` for Winodws.
-# - `xtdc4_driver` for Linux.
-# 
-# Prequisites: 
-# - conan remote server(s) that have the traversal dependencies are added 
-#   and authenticated.
-# - Conan recipe is on the same folder.
-# 
-# Arguments:
-# `CRONO_PUBLISH_LOCAL_PKG`: Publish project packages to conan local cache
-# - Passed as `-DCRONO_PUBLISH_LOCAL_PKG=N`
-# - Values:
-#        `N` : Do not publish.
-#    Default : Publish
 # _____________________________________________________________________________
 
 # General Validations and Configurations ======================================
@@ -55,11 +34,7 @@ set(CRONO_DEP_PKG_DIR
 set(CRONO_DEP_PKG_INC_DIR       ${CRONO_DEP_PKG_DIR}/include)
 
 # Include directories paths ___________________________________________________
-include_directories(${CRONO_TARGET_NAME} PRIVATE 
-        ${PROJ_SRC_INDIR}/include
-        # Include dependency folder
-        ${CRONO_DEP_PKG_INC_DIR}
-)
+include_directories(${CRONO_TARGET_NAME} PRIVATE ${CRONO_DEP_PKG_INC_DIR})
 
 # Link to xtdc4_driver library ________________________________________
 IF(CRONO_GEN_ARCH STREQUAL "x86" AND CRONO_GEN_PLATFORM STREQUAL "windows")
@@ -89,7 +64,7 @@ IF(     NOT EXISTS "${CRONO_DEP_PKG_LIB_DIR}"
 ) 
         message(FATAL_ERROR 
                 "Crono: Please copy driver installation folder driver to the project root. "
-"Lib: <${CRONO_DEP_PKG_LIB_DIR}>, Include: <${CRONO_DEP_PKG_INC_DIR}>.")
+                "Lib: <${CRONO_DEP_PKG_LIB_DIR}>, Include: <${CRONO_DEP_PKG_INC_DIR}>.")
 ENDIF()
         
 # Add the EXE ytarget  ________________________________________________________

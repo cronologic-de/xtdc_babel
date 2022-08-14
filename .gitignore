@@ -1,3 +1,7 @@
 build
 .vs
 driver
+conanmanifest.txt
+conanbuildinfo.txt
+conaninfo.txt
+deploy_manifest.txt
