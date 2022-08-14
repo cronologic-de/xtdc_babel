@@ -20,7 +20,7 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 | Linux    | `x64` | Debug   |
 |          | `x64` | Release |
 
-## Build the Project on Windows
+## Build and Run the Project on Windows
 
 ### Prerequisites
 1. Copy the `driver` folder from the `xTDC4` installation folder (e.g. on <_C:\Program Files\cronologic\xTDC4_>) to the `xTDC4_user_guide_example` folder. If the driver not already installed, you can install it from [product web pag](https://www.cronologic.de/products/tdcs/xtdc4-pcie).
@@ -34,8 +34,7 @@ The built output file `xtdc4_ugex.exe` is created under `xTDC4_user_guide_exampl
 | `x64` | Release | `x64\Release` |
 | `x86` | Debug   | `x86\Debug`   |
 | `x86` | Release | `x86\Release` |
-* You need to copy the DLLs from the uppoer folder (e.g. `x64` and `x86`) to the sub-directory to be able to run the executable if the DLLs are not already on the path.
-
+* You need to copy the DLLs from the upper folder (e.g. `x64` and `x86`) to the sub-directory to be able to run the executable if the DLLs are not already on the path.
 
 ### 1. Build Using Visual Studio
 - The project is built by using `Visual Studio "C++ CMake Tools` that reads speciificaitions got from `tools\CMakeSettings.json`, and configures `CMakeLists.txt`, then  builds the generated buildsystem files.
@@ -51,12 +50,13 @@ The built output file `xtdc4_ugex.exe` is created under `xTDC4_user_guide_exampl
 3. Select the project folder, i.e. `xTDC4_user_guide_example`.
 4. If "CMake Integration" message _to enable Visual Studio's CMake support with this workspace_ is displayed
    1. Select `Enable and set source directory` button.
-   2. In "Select CMakeLists.txt" Dialog, navigate to the <path\to\project\folder>\tools, and open our project `CMakeLists.txt` file, i.e. `xTDC4_user_guide_example\tools\CMakeLists.txt`
+   2. In "Select CMakeLists.txt" Dialog, navigate to `xTDC4_user_guide_example\tools` folder, and open our project `CMakeLists.txt` file, i.e. `xTDC4_user_guide_example\tools\CMakeLists.txt`
+N.B. You can debug it normally as well from Visual Studio.
 
 #### Configure `CMake`
 Configure `CMake` to create _Project Buildsystem_ files, either:
 1. Select the underlying configuration from the `Configurations` drop-box in the Visual Studio toolbar, which will automatically configure `CMake`.
-2. Select `Project -> Configure cache` from menu.
+2. Or, select `Project -> Configure cache` from menu.
 
 #### Compile and Link
 Select `Build -> Build All` from menu, or any standard Visual Studio way to build the project.
@@ -79,12 +79,43 @@ Build the project using `CMake`.
 | `x86`    | Debug   | `cmake --build ..\build\bf32 --config Debug`   | 
 | `x86`    | Release | `cmake --build ..\build\bf32 --config Release` | 
 
+### Run the Example
+#### Prerequisites
+1. `cronologic_windows_kernel` is installed on the machine.
+2. Device is installed properly on the machine.
+
+#### Run
+Run the executable file `xtdc4_ugex.exe` from the corresponding folder on `xTDC4_user_guide_example\driver\<platform>/<configuration>`, e.g. `xtdc_babel\xTDC4_user_guide_example\driver\x64\Debug` for `x64|Debug` configuration build.
+
 ---
 
-## Build the Project on Linux
+## Build and Run the Project on Linux
 
 ### Prerequisites
-[TBD]
+#### Ubuntu
+1. System is updated, e.g. `sudo apt-get update -y`, `sudo apt update`, then `sudo apt upgrade`.
+2. Install Development Tools and `CMake`, e.g. `sudo apt-get install g++ cmake`.
+3. `xtdc4_driver.a` is copied to `xTDC4_user_guide_example/driver/<platform>/<configuration>`, and `xTDC4` include folder is copied to `xTDC4_user_guide_example/driver/include`. You can get them both from the support team.
 
 ### Using `CMake`
-[TBD]
+#### Configure `CMake`
+To configure `CMake` to create _Project Buildsystem_ files, go to tools: `cd tools`, then run the following command:
+| Configuration  | Sample Command                    | 
+| -------------- |---------------------------------- |
+| `Debug`        | `cmake -B ../build/bfD -DCMAKE_BUILD_TYPE=Debug`   | 
+| `Release`      | `cmake -B ../build/bfR -DCMAKE_BUILD_TYPE=Release` | 
+
+#### Compile and Link
+Build the project using `CMake`.
+| Configuration | Sample Command         | 
+| ------------  |----------------------  |
+| Debug   | `cmake --build ../build/bfD` |
+| Release | `cmake --build ../build/bfR` | 
+
+### Run the Example
+#### Prerequisites
+1. `Cronologic PCI Linux Kernel Module` is installed on the machine. You can build it from [`cronologic_linux_kernel`](https://github.com/cronologic-de/cronologic_linux_kernel) on github.
+2. Device is installed properly on the machine.
+
+#### Run
+Run the executable file `sudo ./xtdc4_ugex` from the corresponding folder on `xTDC4_user_guide_example\driver\<platform>/<configuration>`, e.g. `xtdc_babel\xTDC4_user_guide_example\driver\x64\Debug` for `x64|Debug` configuration build.
