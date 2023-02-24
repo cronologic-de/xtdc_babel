@@ -43,9 +43,7 @@ IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 ENDIF()
 
 list(APPEND x64_archs Win64 AMD64 X86 x86_64)
-IF(CMAKE_GENERATOR_PLATFORM STREQUAL "Win32")
-        set(CRONO_GEN_ARCH "x86")
-ELSEIF(CMAKE_SYSTEM_PROCESSOR IN_LIST x64_archs)
+IF(CMAKE_SYSTEM_PROCESSOR IN_LIST x64_archs)
         set(CRONO_GEN_ARCH "x86_64")
 ENDIF()
 
@@ -62,13 +60,7 @@ include_directories(${CRONO_TARGET_NAME} PRIVATE
 )
 
 # Link to xtdc4_driver library ________________________________________
-IF(CRONO_GEN_ARCH STREQUAL "x86" AND CRONO_GEN_PLATFORM STREQUAL "windows")
-        add_library(xtdc4_driver SHARED IMPORTED GLOBAL)
-        set_target_properties(xtdc4_driver PROPERTIES IMPORTED_IMPLIB 
-                xtdc4_driver.lib)  
-        set(CRONO_DEP_PKG_LIB_DIR     ${CRONO_DEP_PKG_DIR}/x86)
-        set(CRONO_XTDC4_LIB_NAME      xtdc4_driver.lib)
-ELSEIF(CRONO_GEN_ARCH STREQUAL "x86_64" AND CRONO_GEN_PLATFORM STREQUAL "windows")
+IF(CRONO_GEN_ARCH STREQUAL "x86_64" AND CRONO_GEN_PLATFORM STREQUAL "windows")
         add_library(xtdc4_driver_64 SHARED IMPORTED GLOBAL)
         set_target_properties(xtdc4_driver_64 PROPERTIES IMPORTED_IMPLIB 
                 xtdc4_driver_64.lib)  
@@ -94,10 +86,7 @@ add_executable(${CRONO_TARGET_NAME}
 
 # Windows-specific Configurations _____________________________________________
 IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
-        IF(         CRONO_GEN_ARCH STREQUAL "x86" 
-                AND CRONO_GEN_PLATFORM STREQUAL "windows")
-                target_link_libraries(${CRONO_TARGET_NAME} xtdc4_driver)
-        ELSEIF(     CRONO_GEN_ARCH STREQUAL "x86_64" 
+        IF(     CRONO_GEN_ARCH STREQUAL "x86_64" 
                 AND CRONO_GEN_PLATFORM STREQUAL "windows")
                 target_link_libraries(${CRONO_TARGET_NAME} xtdc4_driver_64)
         ENDIF()

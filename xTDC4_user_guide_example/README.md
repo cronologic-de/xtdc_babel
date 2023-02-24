@@ -68,7 +68,6 @@ To configure `CMake` to create _Project Buildsystem_ files, go to tools: `cd too
 | Platform | Configurations     | Sample Command                    | 
 | -------- | --------------     |---------------------------------- |
 | Win64    | `Debug`, `Release` | `cmake -B ..\build\bf -A x64`     | 
-| Win32    | `Debug`, `Release` | `cmake -B ..\build\bf32 -A Win32` | 
 
 #### Compile and Link
 Build the project using `CMake`.
@@ -76,8 +75,6 @@ Build the project using `CMake`.
 | ------   | ------------  |----------------------------------------- |
 | `x64`    | Debug   | `cmake --build ..\build\bf  --config Debug`    |
 | `x64`    | Release | `cmake --build ..\build\bf  --config Release`  | 
-| `x86`    | Debug   | `cmake --build ..\build\bf32 --config Debug`   | 
-| `x86`    | Release | `cmake --build ..\build\bf32 --config Release` | 
 
 ### Run the Example
 #### Prerequisites

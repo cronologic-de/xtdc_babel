@@ -15,8 +15,6 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 | ------------ | ------------ | ------------- |
 | Windows  | `x64` | Debug   |
 |          | `x64` | Release |
-|          | `x86` | Debug   |
-|          | `x86` | Release |
 | Linux    | `x64` | Debug   |
 |          | `x64` | Release |
 
@@ -32,8 +30,6 @@ The built output file `timetagger4_user_guide_example` is created under `timetag
 | ------------ | ------------- | ------------- | 
 | `x64` | Debug   | `x64\Debug`   | 
 | `x64` | Release | `x64\Release` |
-| `x86` | Debug   | `x86\Debug`   |
-| `x86` | Release | `x86\Release` |
 * You need to copy the DLLs from the uppoer folder (e.g. `x64` and `x86`) to the sub-directory to be able to run the executable if the DLLs are not already on the path.
 
 ### 1. Build Using Visual Studio
@@ -67,7 +63,6 @@ To configure `CMake` to create _Project Buildsystem_ files, go to tools: `cd too
 | Platform | Configurations     | Sample Command                    | 
 | -------- | --------------     |---------------------------------- |
 | Win64    | `Debug`, `Release` | `cmake -B ..\build\bf -A x64`     | 
-| Win32    | `Debug`, `Release` | `cmake -B ..\build\bf32 -A Win32` | 
 
 #### Compile and Link
 Build the project using `CMake`.
@@ -75,8 +70,6 @@ Build the project using `CMake`.
 | ------   | ------------  |----------------------------------------- |
 | `x64`    | Debug   | `cmake --build ..\build\bf  --config Debug`    |
 | `x64`    | Release | `cmake --build ..\build\bf  --config Release`  | 
-| `x86`    | Debug   | `cmake --build ..\build\bf32 --config Debug`   | 
-| `x86`    | Release | `cmake --build ..\build\bf32 --config Release` | 
 
 ---
 
