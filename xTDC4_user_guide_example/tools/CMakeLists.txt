@@ -2,12 +2,11 @@ cmake_minimum_required(VERSION 3.12)
 set(CRONO_TARGET_NAME "xtdc4_ugex")
 project(${CRONO_TARGET_NAME})
 # _____________________________________________________________________________
-# Build Windows(x86/x86_64)/Linux(x86_64) `xtdc4_ugex.exe/Linux` executable, 
+# Build Windows/Linux `xtdc4_ugex.exe/Linux` executable, 
 # for (Debug/Release) configurations.
 # _____________________________________________________________________________
 
-# General Validations and Configurations ======================================
-
+# General Validations and Configurations ______________________________________
 # cd indirection from /tools to the project source code, "." if no shift
 set(PROJ_SRC_INDIR ..)  
 
@@ -27,7 +26,7 @@ IF(CMAKE_SYSTEM_PROCESSOR IN_LIST x64_archs)
 ENDIF()
 
 # Dependency directories ______________________________________________________
-set(CRONO_DEP_PKG_DIR           
+set(CRONO_DEP_PKG_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_SRC_INDIR}/driver)
 set(CRONO_DEP_PKG_INC_DIR       ${CRONO_DEP_PKG_DIR}/include)
 
@@ -35,16 +34,7 @@ set(CRONO_DEP_PKG_INC_DIR       ${CRONO_DEP_PKG_DIR}/include)
 include_directories(${CRONO_TARGET_NAME} PRIVATE ${CRONO_DEP_PKG_INC_DIR})
 
 # Link to xtdc4_driver library ________________________________________
-IF(CRONO_GEN_ARCH STREQUAL "x86_64" AND CRONO_GEN_PLATFORM STREQUAL "windows")
-        add_library(xtdc4_driver_64 SHARED IMPORTED GLOBAL)
-        set_target_properties(xtdc4_driver_64 PROPERTIES IMPORTED_IMPLIB 
-                xtdc4_driver_64.lib)  
-        set(CRONO_DEP_PKG_LIB_DIR     ${CRONO_DEP_PKG_DIR}/x64)
-        set(CRONO_XTDC4_LIB_NAME      xtdc4_driver_64.lib)
-ELSEIF(CRONO_GEN_PLATFORM STREQUAL "linux")
-        set(CRONO_DEP_PKG_LIB_DIR     ${CRONO_DEP_PKG_DIR}/x64)
-        set(CRONO_XTDC4_LIB_NAME      xtdc4_driver.a)
-ENDIF()
+set(CRONO_DEP_PKG_LIB_DIR     ${CRONO_DEP_PKG_DIR}/x64)
 link_directories(${CRONO_DEP_PKG_LIB_DIR})
 
 # Set output directory_________________________________________________________
@@ -55,42 +45,26 @@ IF(     NOT EXISTS "${CRONO_DEP_PKG_LIB_DIR}"
      OR NOT EXISTS "${CRONO_DEP_PKG_INC_DIR}"
 ) 
         message(FATAL_ERROR 
-                "Crono: Please copy driver installation folder driver to the project root. "
-                "Lib: <${CRONO_DEP_PKG_LIB_DIR}>, Include: <${CRONO_DEP_PKG_INC_DIR}>.")
+                "Crono: Please copy driver installation folder <TimeTagger4/driver> to the project root.")
 ENDIF()
         
-# Add the EXE ytarget  ________________________________________________________
+# Add the target  _____________________________________________________________
 add_executable(${CRONO_TARGET_NAME} 
         ${PROJ_SRC_INDIR}/src/xtdc4_user_guide_example.cpp)
 
 # Windows-specific Configurations _____________________________________________
 IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
-        IF(     CRONO_GEN_ARCH STREQUAL "x86_64" 
-                AND CRONO_GEN_PLATFORM STREQUAL "windows")
-                target_link_libraries(${CRONO_TARGET_NAME} xtdc4_driver_64)
-        ENDIF()
+    add_library(xtdc4_driver_64 SHARED IMPORTED GLOBAL)
+    set_target_properties(xtdc4_driver_64 PROPERTIES IMPORTED_IMPLIB 
+            xtdc4_driver_64.lib)  
+    target_link_libraries(${CRONO_TARGET_NAME} xtdc4_driver_64)
+
 # Linux-specific Configurations _______________________________________________
 ELSEIF (CRONO_GEN_PLATFORM STREQUAL "linux") 
-        # Compilation options _________________________________________________ 
-        add_compile_options(-fPIC -Wall $<$<CONFIG:Debug>:-g>)
-        add_compile_definitions($<$<CONFIG:Debug>:CRONO_DEBUG_ENABLED>)
-        if (NOT CMAKE_BUILD_TYPE)
-                message(STATUS  
-                        "Crono: assuming build type is `Release` as none was specified.")
-                set(CMAKE_BUILD_TYPE Release)
-        endif()
+    # Compilation options _____________________________________________________
+    add_compile_options(-fPIC -Wall $<$<CONFIG:Debug>:-g>)
+    add_compile_definitions($<$<CONFIG:Debug>:CRONO_DEBUG_ENABLED>)
 
-        # Rename the library with prefix `lib` for the linker to find it
-        add_custom_command(TARGET ${CRONO_TARGET_NAME} PRE_BUILD 
-                COMMAND "cp" ${CRONO_DEP_PKG_LIB_DIR}/xtdc4_driver.a 
-                        ${CRONO_DEP_PKG_LIB_DIR}/libxtdc4_driver.a)
-
-        # Link to xtdc4_driver library ________________________________________
-        add_library(xtdc4_driver STATIC IMPORTED GLOBAL)
-        set_target_properties(xtdc4_driver PROPERTIES IMPORTED_IMPLIB xtdc4_driver.a)  
-        target_link_libraries(${CRONO_TARGET_NAME} xtdc4_driver.a)
-
-        # Adjust .o files names  ______________________________________________
-        # Remove .cpp from .o file name
-        set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON) 
+    # Link to xtdc4_driver library ____________________________________________
+    target_link_libraries(${CRONO_TARGET_NAME} libxtdc4_driver.so)
 ENDIF()
