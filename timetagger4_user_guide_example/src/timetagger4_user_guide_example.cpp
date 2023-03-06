@@ -1,10 +1,17 @@
 // timetagger4_user_guide_example.cpp : Example application for the TimeTagger4
-#include "timetagger4_interface.h"
+#include "TimeTagger4_interface.h"
 #include "stdio.h"
+#include "xTDC4_interface.h"
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
+#endif
 
-typedef unsigned int uint32;
-typedef unsigned __int64 uint64;
+#if defined(_WIN32) || defined(_WIN64)
+#define crono_sleep(x) Sleep(x)
+#else
+#include <unistd.h>
+#define crono_sleep(x) usleep(1000 * x)
+#endif
 
 timetagger4_device * initialize_timetagger(int buffer_size, int board_id, int card_index) {
 	// prepare initialization
@@ -101,7 +108,7 @@ void print_device_information(timetagger4_device * device) {
 	printf("\nTDC binsize         : %0.2f ps\n", get_binsize(device));
 }
 
-void print_hit(uint32 hit, double binsize) {
+void print_hit(uint32_t hit, double binsize) {
 	// extract channel number (A-D)
 	char channel = 65 + (hit & 0xf);
 
@@ -118,9 +125,9 @@ void print_hit(uint32 hit, double binsize) {
 	printf("Hit @Channel %c - Flags %d - Offset %u (raw) / %.1f ns\n", channel, flags, ts_offset, ts_offset_ns);
 }
 
-_int64 processPacket(_int64 group_abs_time_old, volatile crono_packet *p, int update_count, double binsize) {
+int64_t processPacket(int64_t group_abs_time_old, volatile crono_packet *p, int update_count, double binsize) {
 	// do something with the data, e.g. calculate current rate
-	_int64 group_abs_time = p->timestamp;
+	int64_t group_abs_time = p->timestamp;
 	// group timestamp increments at 2 GHz
 	double rate = (2e9 / ((double)(group_abs_time - group_abs_time_old) / (double)update_count));
 	printf("\r%.2f kHz", rate / 1000.0);
@@ -134,7 +141,7 @@ _int64 processPacket(_int64 group_abs_time_old, volatile crono_packet *p, int up
 	if ((p->flags & 0x1) == 1)
 		hit_count -= 1;
 
-	uint32* packet_data = (uint32*)(p->data);
+	uint32_t* packet_data = (uint32_t*)(p->data);
 	for (int i = 0; i < hit_count; i++)
 	{
 		print_hit(packet_data[i], binsize);
@@ -184,8 +191,8 @@ int main(int argc, char* argv[]) {
 	int packets_with_errors = 0;
 	bool last_read_no_data = false;
 
-	_int64 group_abs_time = 0;
-	_int64 group_abs_time_old = 0;
+	int64_t group_abs_time = 0;
+	int64_t group_abs_time_old = 0;
 	int update_count = 100;
 	double binsize = get_binsize(device);
 
@@ -193,10 +200,11 @@ int main(int argc, char* argv[]) {
 	// read 10000 packets
 	while (packet_count < 10000)
 	{
+
 		// get pointers to acquired packets
 		status = timetagger4_read(device, &read_config, &read_data);
 		if (status != CRONO_OK) {
-			Sleep(100);
+			crono_sleep(100);
 			printf(" - No data! -\n");
 		}
 		else
@@ -205,6 +213,7 @@ int main(int argc, char* argv[]) {
 			volatile crono_packet* p = read_data.first_packet;
 			while (p <= read_data.last_packet)
 			{
+
 				// printf is slow, so this demo only processes every 1000th packet
 				// your application would of course collect every packet
 				if (packet_count % update_count == 0) {

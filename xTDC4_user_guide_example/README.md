@@ -15,32 +15,20 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 | ------------ | ------------ | ------------- |
 | Windows  | `x64` | Debug   |
 |          | `x64` | Release |
-|          | `x86` | Debug   |
-|          | `x86` | Release |
 | Linux    | `x64` | Debug   |
 |          | `x64` | Release |
 
 ## Build and Run the Project on Windows
 
 ### Prerequisites
-1. Copy the `driver` folder from the `xTDC4` installation folder (e.g. on <_C:\Program Files\cronologic\xTDC4_>) to the `xTDC4_user_guide_example` folder. If the driver not already installed, you can install it from [product web pag](https://www.cronologic.de/products/tdcs/xtdc4-pcie).
+1. Inf not already found, copy the `driver` folder from the `xTDC4` installation folder (e.g. on <_C:\Program Files\cronologic\xTDC4_>) to the `xTDC4_user_guide_example` folder. If the driver not already installed, you can install it from [product web pag](https://www.cronologic.de/products/tdcs/xtdc4-pcie).
 2. [`CMake`](https://cmake.org/install/) is installed.
-
-### Output File
-The built output file `xtdc4_ugex.exe` is created under `xTDC4_user_guide_example\driver` sub-directory as following:
-| Architecture | Configuration | Sub-directory | 
-| ------------ | ------------- | ------------- | 
-| `x64` | Debug   | `x64\Debug`   | 
-| `x64` | Release | `x64\Release` |
-| `x86` | Debug   | `x86\Debug`   |
-| `x86` | Release | `x86\Release` |
-* You need to copy the DLLs from the upper folder (e.g. `x64` and `x86`) to the sub-directory to be able to run the executable if the DLLs are not already on the path.
 
 ### 1. Build Using Visual Studio
 - The project is built by using `Visual Studio "C++ CMake Tools` that reads speciificaitions got from `tools\CMakeSettings.json`, and configures `CMakeLists.txt`, then  builds the generated buildsystem files.
 - `CMakeSettings.json` and the steps mentioned here are compatible with Visual Studio 2022. 
 
-### Additional Prerequisites
+#### Additional Prerequisites
 1. Visual Studio 2022 is installed.
 2. [Visual Studio "C++ CMake Tools"](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio) is installed.
 
@@ -61,7 +49,7 @@ Configure `CMake` to create _Project Buildsystem_ files, either:
 #### Compile and Link
 Select `Build -> Build All` from menu, or any standard Visual Studio way to build the project.
 
-### 2. Build Using `CMake`
+### 2. Build Using `CMake` Command line
 
 #### Configure `CMake`
 To configure `CMake` to create _Project Buildsystem_ files, go to tools: `cd tools`, then run the following command:
@@ -82,7 +70,7 @@ Build the project using `CMake`.
 2. Device is installed properly on the machine.
 
 #### Run
-Run the executable file `xtdc4_ugex.exe` from the corresponding folder on `xTDC4_user_guide_example\driver\<platform>/<configuration>`, e.g. `xtdc_babel\xTDC4_user_guide_example\driver\x64\Debug` for `x64|Debug` configuration build.
+Run the executable file found on `lib\x64` folder as `xtdc4_ugex.exe`.
 
 ---
 
@@ -92,7 +80,7 @@ Run the executable file `xtdc4_ugex.exe` from the corresponding folder on `xTDC4
 #### Ubuntu
 1. System is updated, e.g. `sudo apt-get update -y`, `sudo apt update`, then `sudo apt upgrade`.
 2. Install Development Tools and `CMake`, e.g. `sudo apt-get install g++ cmake`.
-3. `xtdc4_driver.a` is copied to `xTDC4_user_guide_example/driver/<platform>/<configuration>`, and `xTDC4` include folder is copied to `xTDC4_user_guide_example/driver/include`. You can get them both from the support team.
+3. `libxtdc4_driver.so` is copied to `xTDC4_user_guide_example/driver/x64`, and `xTDC4` include folder is copied to `xTDC4_user_guide_example/driver/include`. All are already found on the repository, and you can get them both from the support team if needed.
 
 ### Using `CMake`
 #### Configure `CMake`
@@ -108,6 +96,7 @@ Build the project using `CMake`.
 | ------------  |----------------------  |
 | Debug   | `cmake --build ../build/bfD` |
 | Release | `cmake --build ../build/bfR` | 
+* The code is linked to the shared library `libxtdc4_driver.so`.
 
 ### Run the Example
 #### Prerequisites
@@ -115,4 +104,5 @@ Build the project using `CMake`.
 2. Device is installed properly on the machine.
 
 #### Run
-Run the executable file `sudo ./xtdc4_ugex` from the corresponding folder on `xTDC4_user_guide_example\driver\<platform>/<configuration>`, e.g. `xtdc_babel\xTDC4_user_guide_example\driver\x64\Debug` for `x64|Debug` configuration build.
+Run the executable file found on `lib/x64` folder as `sudo ./xtdc4_ugex`.
+

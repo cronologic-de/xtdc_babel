@@ -24,14 +24,6 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 1. Copy the `driver` folder from the `TimeTagger` installation folder (e.g. on <_C:\Program Files\cronologic\TimeTagger4_>) to the `timetagger4_user_guide_example` folder. If the driver not already installed, you can install it from [product web pag](https://www.cronologic.de/products/tdcs/timetagger).
 2. [`CMake`](https://cmake.org/install/) is installed.
 
-### Output File
-The built output file `timetagger4_user_guide_example` is created under `timetagger4_user_guide_example\driver` sub-directory as following:
-| Architecture | Configuration | Sub-directory | 
-| ------------ | ------------- | ------------- | 
-| `x64` | Debug   | `x64\Debug`   | 
-| `x64` | Release | `x64\Release` |
-* You need to copy the DLLs from the uppoer folder (e.g. `x64` and `x86`) to the sub-directory to be able to run the executable if the DLLs are not already on the path.
-
 ### 1. Build Using Visual Studio
 - The project is built by using `Visual Studio "C++ CMake Tools` that reads speciificaitions got from `tools\CMakeSettings.json`, and configures `CMakeLists.txt`, then  builds the generated buildsystem files.
 - `CMakeSettings.json` and the steps mentioned here are compatible with Visual Studio 2022. 
@@ -47,16 +39,17 @@ The built output file `timetagger4_user_guide_example` is created under `timetag
 4. If "CMake Integration" message _to enable Visual Studio's CMake support with this workspace_ is displayed
    1. Select `Enable and set source directory` button.
    2. In "Select CMakeLists.txt" Dialog, navigate to the <path\to\project\folder>\tools, and open our project `CMakeLists.txt` file, i.e. `timetagger4_user_guide_example\tools\CMakeLists.txt`
+N.B. You can debug it normally as well from Visual Studio.
 
 #### Configure `CMake`
 Configure `CMake` to create _Project Buildsystem_ files, either:
 1. Select the underlying configuration from the `Configurations` drop-box in the Visual Studio toolbar, which will automatically configure `CMake`.
-2. Select `Project -> Configure cache` from menu.
+2. Or, select `Project -> Configure cache` from menu.
 
 #### Compile and Link
 Select `Build -> Build All` from menu, or any standard Visual Studio way to build the project.
 
-### 2. Build Using `CMake`
+### 2. Build Using `CMake` Command line
 
 #### Configure `CMake`
 To configure `CMake` to create _Project Buildsystem_ files, go to tools: `cd tools`, then run the following command:
@@ -71,12 +64,44 @@ Build the project using `CMake`.
 | `x64`    | Debug   | `cmake --build ..\build\bf  --config Debug`    |
 | `x64`    | Release | `cmake --build ..\build\bf  --config Release`  | 
 
+### Run the Example
+#### Prerequisites
+1. `cronologic_windows_kernel` is installed on the machine.
+2. Device is installed properly on the machine.
+
+#### Run
+Run the executable file found on `lib\x64` folder as `timetagger4_user_guide_example.exe`.
+
 ---
 
-## Build the Project on Linux
+## Build and Run the Project on Linux
 
 ### Prerequisites
-[TBD]
+#### Ubuntu
+1. System is updated, e.g. `sudo apt-get update -y`, `sudo apt update`, then `sudo apt upgrade`.
+2. Install Development Tools and `CMake`, e.g. `sudo apt-get install g++ cmake`.
+3. `libxtdc4_driver.so` is copied to `timetagger4_user_guide_example/driver/x64`, and `xTDC4` include folder is copied to `timetagger4_user_guide_example/driver/include`. All are found on the repository already, and you can get them both from the support team if needed.
 
 ### Using `CMake`
-[TBD]
+#### Configure `CMake`
+To configure `CMake` to create _Project Buildsystem_ files, go to tools: `cd tools`, then run the following command:
+| Configuration  | Sample Command                    | 
+| -------------- |---------------------------------- |
+| `Debug`        | `cmake -B ../build/bfD -DCMAKE_BUILD_TYPE=Debug`   | 
+| `Release`      | `cmake -B ../build/bfR -DCMAKE_BUILD_TYPE=Release` | 
+
+#### Compile and Link
+Build the project using `CMake`.
+| Configuration | Sample Command         | 
+| ------------  |----------------------  |
+| Debug   | `cmake --build ../build/bfD` |
+| Release | `cmake --build ../build/bfR` | 
+* The code is linked to the shared library `libxtdc4_driver.so`.
+
+### Run the Example
+#### Prerequisites
+1. `Cronologic PCI Linux Kernel Module` is installed on the machine. You can build it from [`cronologic_linux_kernel`](https://github.com/cronologic-de/cronologic_linux_kernel) on github.
+2. Device is installed properly on the machine.
+
+#### Run
+Run the executable file found on `lib/x64` folder as `sudo ./timetagger4_user_guide_example`.
