@@ -104,4 +104,4 @@ Build the project using `CMake`.
 2. Device is installed properly on the machine.
 
 #### Run
-Run the executable file found on `lib/x64` folder as `sudo ./timetagger4_user_guide_example`.
+Run the executable file found on `lib/x64` folder as `sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH:. ./timetagger4_user_guide_example`.
