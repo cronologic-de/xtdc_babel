@@ -24,9 +24,6 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 1. Inf not already found, copy the `driver` folder from the `xTDC4` installation folder (e.g. on <_C:\Program Files\cronologic\xTDC4_>) to the `xTDC4_user_guide_example` folder. If the driver not already installed, you can install it from [product web pag](https://www.cronologic.de/products/tdcs/xtdc4-pcie).
 2. [`CMake`](https://cmake.org/install/) is installed.
 
-### Output File
-* The built output file `xtdc4_ugex.exe` is created under `xTDC4_user_guide_example\driver\x64` sub-directory.
-
 ### 1. Build Using Visual Studio
 - The project is built by using `Visual Studio "C++ CMake Tools` that reads speciificaitions got from `tools\CMakeSettings.json`, and configures `CMakeLists.txt`, then  builds the generated buildsystem files.
 - `CMakeSettings.json` and the steps mentioned here are compatible with Visual Studio 2022. 
@@ -73,7 +70,7 @@ Build the project using `CMake`.
 2. Device is installed properly on the machine.
 
 #### Run
-Run the executable file `xTDC4_user_guide_example\driver\x64\xtdc4_ugex.exe`.
+Run the executable file found on `lib\x64` folder as `xtdc4_ugex.exe`.
 
 ---
 
@@ -107,4 +104,5 @@ Build the project using `CMake`.
 2. Device is installed properly on the machine.
 
 #### Run
-Run the executable file `sudo ./xTDC4_user_guide_example/driver/x64/xtdc4_ugex`.
+Run the executable file found on `lib/x64` folder as `sudo ./xtdc4_ugex`.
+

@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.12)
 set(CRONO_TARGET_NAME "timetagger4_user_guide_example")
 project(${CRONO_TARGET_NAME})
 # _____________________________________________________________________________
-# Build Windows/Linux `xtdc4_ugex.exe/Linux` executable, 
+# Build Windows/Linux `xtdc4_ugex.exe/xtdc4_ugex` executable, 
 # for (Debug/Release) configurations.
 # _____________________________________________________________________________
 
 # General Validations and Configurations ______________________________________
 # cd indirection from /tools to the project source code, "." if no shift
-set(PROJ_SRC_INDIR ..)  
+set(PROJ_SRC_INDIR ../..)  
 
 # Get the platform and architecure ____________________________________________
 # Check supported architecture, and set `CRONO_GEN_ARCH` to `x86_64` for all
@@ -20,25 +20,17 @@ IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         set(CRONO_GEN_PLATFORM "linux")
 ENDIF()
 
-list(APPEND x64_archs Win64 AMD64 X86 x86_64)
+list(APPEND x64_archs Win64 AMD64 x86_64)
 IF(CMAKE_SYSTEM_PROCESSOR IN_LIST x64_archs)
         set(CRONO_GEN_ARCH "x86_64")
 ENDIF()
 
-# Dependency directories ______________________________________________________
-set(CRONO_DEP_PKG_DIR
-        ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_SRC_INDIR}/driver)
-set(CRONO_DEP_PKG_INC_DIR       ${CRONO_DEP_PKG_DIR}/include)
-
 # Include directories paths ___________________________________________________
-include_directories(${CRONO_TARGET_NAME} PRIVATE 
-        ${PROJ_SRC_INDIR}/include
-        # Include dependency folder
-        ${CRONO_DEP_PKG_INC_DIR}
-)
+set(CRONO_DEP_PKG_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_SRC_INDIR}/include)
+include_directories(${CRONO_TARGET_NAME} PRIVATE  ${CRONO_DEP_PKG_INC_DIR})
 
 # Link to xtdc4_driver library ________________________________________
-set(CRONO_DEP_PKG_LIB_DIR     ${CRONO_DEP_PKG_DIR}/x64)
+set(CRONO_DEP_PKG_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_SRC_INDIR}/lib/x64)
 link_directories(${CRONO_DEP_PKG_LIB_DIR})
 
 # Set output directory_________________________________________________________

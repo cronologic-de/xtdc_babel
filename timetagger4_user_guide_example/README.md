@@ -24,9 +24,6 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 1. Copy the `driver` folder from the `TimeTagger` installation folder (e.g. on <_C:\Program Files\cronologic\TimeTagger4_>) to the `timetagger4_user_guide_example` folder. If the driver not already installed, you can install it from [product web pag](https://www.cronologic.de/products/tdcs/timetagger).
 2. [`CMake`](https://cmake.org/install/) is installed.
 
-### Output File
-The built output file `timetagger4_user_guide_example` is created under `timetagger4_user_guide_example\driver\x64`.
-
 ### 1. Build Using Visual Studio
 - The project is built by using `Visual Studio "C++ CMake Tools` that reads speciificaitions got from `tools\CMakeSettings.json`, and configures `CMakeLists.txt`, then  builds the generated buildsystem files.
 - `CMakeSettings.json` and the steps mentioned here are compatible with Visual Studio 2022. 
@@ -73,7 +70,7 @@ Build the project using `CMake`.
 2. Device is installed properly on the machine.
 
 #### Run
-Run the executable file `timetagger4_user_guide_example\driver\timetagger4_user_guide_example.exe`.
+Run the executable file found on `lib\x64` folder as `timetagger4_user_guide_example.exe`.
 
 ---
 
@@ -107,4 +104,4 @@ Build the project using `CMake`.
 2. Device is installed properly on the machine.
 
 #### Run
-Run the executable file `sudo ./timetagger4_user_guide_example/driver/x64/xtdc4_ugex`.
+Run the executable file found on `lib/x64` folder as `sudo ./timetagger4_user_guide_example`.
