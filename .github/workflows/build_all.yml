@@ -1,0 +1,64 @@
+name: CMake
+
+on:
+  push:
+    paths: # Collected from paths of all jobs below
+    - 'include/**'
+    - 'lib/**'
+    - 'timetagger4_user_guide_example/**'
+    - 'xTDC4_user_guide_example/**'
+    
+env:
+  BUILD_TYPE: Release
+  BUILD_CONFIGURATION: Release
+  SOLUTION_FILE_PATH: .\dummy\msvscpp\
+  COMMIT_MSG: 'Internal build due to code change' 
+  XTDC4_TOOLS_SUB_DIR: 'xTDC4_user_guide_example/tools'
+  UBUNTU_BUILD_PATH: '../build/bfRU'
+  WIN_BUILD_PATH: '../build/bfRW'
+
+jobs:
+
+  Check-Build-xTDC4_user_guide_example:
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      ok_to_proceed: ${{ steps.check.outputs.ok_to_proceed_val }}
+      
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+      
+    - name: Get changed files in concerned folder(s)
+      id: changed-files-specific
+      uses: tj-actions/changed-files@v35
+      with:
+        files: |
+          include/**
+          lib/**
+          xTDC4_user_guide_example/**
+          
+    # Check if any file(s) in the concerned folder changed
+    - name: Check
+      id: check
+      if: steps.changed-files-specific.outputs.any_changed == 'false'
+      run: |
+        echo "No concerned files changed, suppressing processing."       
+        echo "ok_to_proceed_val=N" >> $GITHUB_OUTPUT
+
+  Build-xTDC4-Ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: echo Suppress Status if Needed
+      if: ${{needs.Check-Build-Dummy-Library-Using-MSBuild.outputs.ok_to_proceed == 'N' }}
+      
+    - name: Checkout Code
+      if: ${{needs.Check-Build-Dummy-Library-Using-MSBuild.outputs.ok_to_proceed != 'N' }}
+      uses: actions/checkout@v3
+
+    - name: Configure CMake and Build
+      run: |
+        cd ${{XTDC4_TOOLS_SUB_DIR}}
+        cmake -B ${{UBUNTU_BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake --build ${{UBUNTU_BUILD_PATH}}
