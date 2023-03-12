@@ -68,6 +68,27 @@ jobs:
         cd ${{env.XTDC4_TOOLS_SUB_DIR}}
         cmake -B ${{env.UBUNTU_BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake --build ${{env.UBUNTU_BUILD_PATH}}
+        
+  Build-xTDC4-Win:
+    needs: Check-Build-xTDC4_user_guide_example
+    runs-on:  windows-latest
+
+    steps:
+    - name: echo Suppress Status if Needed
+      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed == 'N' }}
+      run: |
+        echo "Job execution processing is suppressed for no cencerned files are changed."
+        
+    - name: Checkout Code
+      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      uses: actions/checkout@v3
+
+    - name: Configure CMake and Build
+      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      run: |
+        cd ${{env.XTDC4_TOOLS_SUB_DIR}}
+        cmake -B ${{env.UBUNTU_BUILD_PATH}}
+        cmake --build ${{env.UBUNTU_BUILD_PATH}} --config ${{env.BUILD_TYPE}}
 
   Check-Build-timetagger4_user_guide_example:
     runs-on: ubuntu-latest
@@ -117,3 +138,24 @@ jobs:
         cd ${{env.TIMETAGGER_TOOLS_SUB_DIR}}
         cmake -B ${{env.UBUNTU_BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake --build ${{env.UBUNTU_BUILD_PATH}}
+
+  Build-TimeTagger-Win:
+    needs: Check-Build-timetagger4_user_guide_example
+    runs-on: windows-latest
+
+    steps:
+    - name: echo Suppress Status if Needed
+      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed == 'N' }}
+      run: |
+        echo "Job execution processing is suppressed for no cencerned files are changed."
+        
+    - name: Checkout Code
+      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      uses: actions/checkout@v3
+
+    - name: Configure CMake and Build
+      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      run: |
+        cd ${{env.TIMETAGGER_TOOLS_SUB_DIR}}
+        cmake -B ${{env.UBUNTU_BUILD_PATH}}
+        cmake --build ${{env.UBUNTU_BUILD_PATH}} --config ${{env.BUILD_TYPE}}
