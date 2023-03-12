@@ -70,7 +70,8 @@ Build the project using `CMake`.
 2. Device is installed properly on the machine.
 
 #### Run
-Run the executable file found on `lib\x64` folder as `xtdc4_ugex.exe`.
+1. Copy the driver DLL to `lib\x64\<config>`.
+2. Run the executable file found on `lib\x64\<config>` folder as `xtdc4_ugex.exe`.
 
 ---
 
