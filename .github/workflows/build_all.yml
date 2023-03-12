@@ -11,7 +11,6 @@ on:
     
 env:
   BUILD_TYPE: Release
-  BUILD_CONFIGURATION: Release
   SOLUTION_FILE_PATH: .\dummy\msvscpp\
   COMMIT_MSG: 'Internal build due to code change' 
   XTDC4_TOOLS_SUB_DIR: 'xTDC4_user_guide_example/tools'
@@ -65,6 +64,6 @@ jobs:
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-Dummy-Library-Using-MSBuild.outputs.ok_to_proceed != 'N' }}
       run: |
-        cd ${{XTDC4_TOOLS_SUB_DIR}}
-        cmake -B ${{UBUNTU_BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        cmake --build ${{UBUNTU_BUILD_PATH}}
+        cd ${{env.XTDC4_TOOLS_SUB_DIR}}
+        cmake -B ${{env.UBUNTU_BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake --build ${{env.UBUNTU_BUILD_PATH}}
