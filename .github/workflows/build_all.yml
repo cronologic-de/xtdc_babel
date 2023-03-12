@@ -15,8 +15,7 @@ env:
   COMMIT_MSG: 'Internal build due to code change' 
   XTDC4_TOOLS_SUB_DIR: 'xTDC4_user_guide_example/tools'
   TIMETAGGER_TOOLS_SUB_DIR: 'timetagger4_user_guide_example/tools'
-  UBUNTU_BUILD_PATH: '../build/bfRU'
-  WIN_BUILD_PATH: '../build/bfRW'
+  BUILD_PATH: '../build/bfRU'
 
 jobs:
 
@@ -66,8 +65,14 @@ jobs:
       if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
       run: |
         cd ${{env.XTDC4_TOOLS_SUB_DIR}}
-        cmake -B ${{env.UBUNTU_BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        cmake --build ${{env.UBUNTU_BUILD_PATH}}
+        cmake -B ${{env.BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake --build ${{env.BUILD_PATH}}
+        
+    - name: Archive output
+      uses: actions/upload-artifact@v3
+      with:
+          name: xTDC4-Ubuntu-ug_ex
+          path: lib/x64/xtdc4_ugex
         
   Build-xTDC4-Win:
     needs: Check-Build-xTDC4_user_guide_example
@@ -87,8 +92,14 @@ jobs:
       if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
       run: |
         cd ${{env.XTDC4_TOOLS_SUB_DIR}}
-        cmake -B ${{env.UBUNTU_BUILD_PATH}}
-        cmake --build ${{env.UBUNTU_BUILD_PATH}} --config ${{env.BUILD_TYPE}}
+        cmake -B ${{env.BUILD_PATH}}
+        cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}
+        
+    - name: Archive output
+      uses: actions/upload-artifact@v3
+      with:
+          name: xTDC4-Ubuntu-ug_ex
+          path: lib/x64/Release/xtdc4_ugex.exe
 
   Check-Build-timetagger4_user_guide_example:
     runs-on: ubuntu-latest
@@ -136,9 +147,15 @@ jobs:
       if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
       run: |
         cd ${{env.TIMETAGGER_TOOLS_SUB_DIR}}
-        cmake -B ${{env.UBUNTU_BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        cmake --build ${{env.UBUNTU_BUILD_PATH}}
+        cmake -B ${{env.BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake --build ${{env.BUILD_PATH}}
 
+    - name: Archive output
+      uses: actions/upload-artifact@v3
+      with:
+          name: xTDC4-Ubuntu-timetagger_ex
+          path: lib/x64/timetagger4_user_guide_example
+          
   Build-TimeTagger-Win:
     needs: Check-Build-timetagger4_user_guide_example
     runs-on: windows-latest
@@ -157,5 +174,12 @@ jobs:
       if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
       run: |
         cd ${{env.TIMETAGGER_TOOLS_SUB_DIR}}
-        cmake -B ${{env.UBUNTU_BUILD_PATH}}
-        cmake --build ${{env.UBUNTU_BUILD_PATH}} --config ${{env.BUILD_TYPE}}
+        cmake -B ${{env.BUILD_PATH}}
+        cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}
+        
+    - name: Archive output
+      uses: actions/upload-artifact@v3
+      with:
+          name: xTDC4-Ubuntu-timetagger_ex
+          path: lib/x64/Release/timetagger4_user_guide_example.exe
+        
