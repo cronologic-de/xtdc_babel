@@ -7,6 +7,7 @@ on:
     - 'lib/**'
     - 'timetagger4_user_guide_example/**'
     - 'xTDC4_user_guide_example/**'
+    - '.github/workflows/build_all.yml'
     
 env:
   BUILD_TYPE: Release
@@ -37,6 +38,7 @@ jobs:
           include/**
           lib/**
           xTDC4_user_guide_example/**
+          .github/workflows/build_all.yml
           
     # Check if any file(s) in the concerned folder changed
     - name: Check
