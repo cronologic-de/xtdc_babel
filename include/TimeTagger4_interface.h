@@ -717,6 +717,12 @@ typedef struct {
      */
     int auto_trigger_random_exponent;
     ///@}
+    /** \brief use the autotrigger to replace the ext_sync channel.
+     *
+     * Autotrigger replaces ext_sync to enable continous starts of new packets
+     *
+     */
+    crono_bool_t auto_trigger_as_internal_trigger;
 
 } timetagger4_configuration;
 
@@ -816,6 +822,11 @@ TIMETAGGER4_API int timetagger4_read(timetagger4_device *device,
  *  a TimeTagger4 board to be present.
  */
 TIMETAGGER4_API int timetagger4_get_driver_revision();
+
+/*! \ingroup statfuncts
+ *  \brief Returns the card name for a specific device
+ */
+TIMETAGGER4_API const char *timetagger4_get_device_name(timetagger4_device *device);
 
 /*! \ingroup statfuncts
  *  \brief Returns the driver version including SVN build revision as a
