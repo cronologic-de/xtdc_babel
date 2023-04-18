@@ -65,6 +65,20 @@
 #define TDC4_RCLK_75M 1
 #define TDC4_RCLK_150M 2
 
+
+/**
+ * Fixed length of calibration date string.
+ * calibration date format: YYYY-MM-DD hh:mm
+ */
+#define TDC4_CALIBRATION_DATE_LEN 20
+
+/**
+ * Fixed length of bitstream date string.
+ * bitstream date format: YYYY-MM-DD hh:mm:ss
+ */
+#define TDC4_BITSTREAM_DATE_LEN 20
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -179,18 +193,6 @@ typedef struct {
      */
     int rclk_sel;
 } tdc4_init_parameters;
-
-/**
- * Fixed length of calibration date string.
- * calibration date format: YYYY-MM-DD hh:mm
- */
-static const int TDC4_CALIBRATION_DATE_LEN = 20;
-
-/**
- * Fixed length of bitstream date string.
- * bitstream date format: YYYY-MM-DD hh:mm:ss
- */
-static const int TDC4_BITSTREAM_DATE_LEN = 20;
 
 /*! \ingroup staticinfo
  *  \brief Structure contains static information
@@ -571,6 +573,12 @@ typedef struct {
      */
     int auto_trigger_random_exponent;
     ///@}
+    /** \brief use the autotrigger to replace the ext_sync channel.
+     *
+     * Autotrigger replaces ext_sync to enable continous starts of new packets
+     *
+     */
+    crono_bool_t auto_trigger_as_internal_trigger;    
 
 } tdc4_configuration;
 
