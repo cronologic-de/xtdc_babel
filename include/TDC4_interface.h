@@ -418,6 +418,16 @@ typedef struct {
     int stop;
 } tdc4_lowres_channel;
 
+/*! \ingroup delay_config
+ *  \brief Contains configurable delay value
+ */
+typedef struct {
+    /*! \brief delay in 200 ps bins for a channel
+     * must be >= 0 , maximum value of 1023 (204 ns)
+     */
+    int delay;
+} tdc4_delay_config;
+
 /*! \ingroup tiger
  *  \brief contains settings of timing generator
  */
@@ -578,7 +588,12 @@ typedef struct {
      * Autotrigger replaces ext_sync to enable continous starts of new packets
      *
      */
-    crono_bool_t auto_trigger_as_internal_trigger;    
+    crono_bool_t auto_trigger_as_internal_trigger;
+    ///@}
+    /** \brief configurable delay of input channels. (currently only used by TimeTagger4)
+    * index 0 is start channel, 1-4 are A-D
+     */
+    tdc4_delay_config delay_config[TDC4_TDC_CHANNEL_COUNT + 1];
 
 } tdc4_configuration;
 

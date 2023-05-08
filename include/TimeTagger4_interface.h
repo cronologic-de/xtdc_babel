@@ -372,12 +372,7 @@ typedef unsigned char byte;
     1 //!< Timestamp of the rising edge, if not set falling edge
 #define TIMETAGGER4_HIT_FLAG_TIME_OVERFLOW                                     \
     2 //!< Time since start pulse longer than timestamp counter range
-#define TIMETAGGER4_HIT_FLAG_COARSE_TIMESTAMP 4 //!< FPGA coarse time
-#define TIMETAGGER4_HIT_FLAG_TDC_MISSING                                       \
-    4 //!< TDC has not provided a timestamp, FPGA coarse time given instead
-#define TIMETAGGER4_HIT_FLAG_FPGA_MISSING                                      \
-    8 //!< FPGA has not seen the stop event, hit may be out of sequence and
-      //!< belong to an other group
+#define TIMETAGGER4_HIT_FLAG_COARSE_TIMESTAMP 4 //!< coarse time always set for TimeTagger4
 /*!@}*/
 
 /*! \ingroup funcerrors
@@ -632,6 +627,11 @@ typedef tdc4_tiger_block timetagger4_tiger_block;
  */
 typedef tdc4_trigger timetagger4_trigger;
 
+/*! \ingroup delay_config
+ *  \brief Contains configurable delay value
+ */
+typedef tdc4_delay_config timetagger4_delay_config;
+
 /*! \ingroup confstruct Structure timetagger4_configuration
  *  \brief  contains configuration information
  *
@@ -723,6 +723,11 @@ typedef struct {
      *
      */
     crono_bool_t auto_trigger_as_internal_trigger;
+    ///@}
+    /*! \brief delay in 200 ps bins
+     * must be >= 0 , maximum value of 208 ns
+     */
+    timetagger4_delay_config delay_config[TDC4_TDC_CHANNEL_COUNT + 1];
 
 } timetagger4_configuration;
 
