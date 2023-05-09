@@ -291,6 +291,15 @@ typedef struct {
      *  bitstream was created.
      */
     char bitstream_date[TDC4_BITSTREAM_DATE_LEN];
+    /*! \brief Bin size of delay in ps
+     *  The increment of the delay_config.delay field for TimeTagger4
+     */
+    double delay_bin_size;
+    /*! \brief Auto trigger clock frequency
+     *  The clock frequency of the auto trigger in Hz
+     *  used for calculating the auto_trigger_period.
+     */
+    double auto_trigger_ref_clock;
 } tdc4_static_info;
 
 /*! \ingroup fastinfo
@@ -419,10 +428,11 @@ typedef struct {
 } tdc4_lowres_channel;
 
 /*! \ingroup delay_config
- *  \brief Contains configurable delay value
+ *  \brief Contains configurable delay value for TimeTagger4
  */
 typedef struct {
-    /*! \brief delay in 200 ps bins for a channel
+    /*! \brief delay in static_info.delay_bin_size (currently 200 ps)
+     bins for a channel
      * must be >= 0 , maximum value of 1023 (204 ns)
      */
     int delay;
@@ -559,6 +569,7 @@ typedef struct {
      *
      *  there is no enable or reset as the usage of this trigger can be
      *  configured in the channels.
+     *  The clock frequency is specified in static_info.auto_trigger_ref_clock
      */
     ///@{
     int auto_trigger_period;
@@ -568,13 +579,13 @@ typedef struct {
      *  To be exact, there are two parameters M = @link auto_trigger_period
      *  auto_trigger_period @endlink and N = @link
      *  auto_trigger_random_exponent auto_trigger_random_exponent @endlink
-     *  that result in a distance between triggers of
+     *  that result in a interval between triggers of
      *
-     *          T = 1 + M + [1...2^N]
+     *          T = M + [1...2^N] - 1
      *
      *  clock cycles.
      *
-     *          0 <= M < 2^32
+     *          10 <= M < 2^31
      *
      *          0 <= N < 32
      *
@@ -582,13 +593,6 @@ typedef struct {
      *  configured in the channels.
      */
     int auto_trigger_random_exponent;
-    ///@}
-    /** \brief use the autotrigger to replace the ext_sync channel.
-     *
-     * Autotrigger replaces ext_sync to enable continous starts of new packets
-     *
-     */
-    crono_bool_t auto_trigger_as_internal_trigger;
     ///@}
     /** \brief configurable delay of input channels. (currently only used by TimeTagger4)
     * index 0 is start channel, 1-4 are A-D

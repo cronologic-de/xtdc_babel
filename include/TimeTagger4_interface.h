@@ -167,6 +167,9 @@ typedef unsigned char byte;
 /*! \defgroup tdcmode #defines for tdc_mode
  *  \brief tdc_mode can be either grouped or continuous
  */
+#define TIMETAGGER4_TDC_MODE_GROUPED 0 //!< grouped tdc_mode
+#define TIMETAGGER4_TDC_MODE_CONTINUOUS  1 //!< continuous tdc_mode: supported on TimeTagger4
+
 /*! \defgroup defdcoffset #defines for dc_offset
  *  \brief dc_offset values for various signal standards
  *
@@ -326,6 +329,17 @@ typedef unsigned char byte;
 #define TIMETAGGER4_DC_OFFSET_N_SSTL_3 -1.32
 #define TIMETAGGER4_DC_OFFSET_N_SSTL_2 -1.25
 /*!@}*/
+
+/*! \ingroup deftriggerindex
+ *  @{
+ */
+#define TIMETAGGER4_TRIGGER_S 0
+#define TIMETAGGER4_TRIGGER_A 1
+#define TIMETAGGER4_TRIGGER_B 2
+#define TIMETAGGER4_TRIGGER_C 3
+#define TIMETAGGER4_TRIGGER_D 4
+#define TIMETAGGER4_TRIGGER_AUTO 14
+#define TIMETAGGER4_TRIGGER_ONE 15
 
 /*! \ingroup deftriggersource
  *  @{
@@ -704,11 +718,13 @@ typedef struct {
      *  There are two parameters M = @link auto_trigger_period
      *  auto_trigger_period @endlink and N = @link
      *  auto_trigger_random_exponent auto_trigger_random_exponent @endlink
-     *  that result in a distance between triggers of T clock cycles.
+     *  that result in a interval between triggers of T clock cycles.
      *
-     *          T = 1 + M + [1...2^N]
+     *          T = M + [1...2^N] - 1
      *
-     *          0 <= M < 2^32
+     *  clock cycles.
+     *
+     *          10 <= M < 2^31
      *
      *          0 <= N < 32
      *
@@ -717,12 +733,6 @@ typedef struct {
      */
     int auto_trigger_random_exponent;
     ///@}
-    /** \brief use the autotrigger to replace the ext_sync channel.
-     *
-     * Autotrigger replaces ext_sync to enable continous starts of new packets
-     *
-     */
-    crono_bool_t auto_trigger_as_internal_trigger;
     ///@}
     /*! \brief delay in 200 ps bins
      * must be >= 0 , maximum value of 208 ns
