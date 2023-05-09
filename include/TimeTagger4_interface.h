@@ -167,6 +167,9 @@ typedef unsigned char byte;
 /*! \defgroup tdcmode #defines for tdc_mode
  *  \brief tdc_mode can be either grouped or continuous
  */
+#define TIMETAGGER4_TDC_MODE_GROUPED 0 //!< grouped tdc_mode
+#define TIMETAGGER4_TDC_MODE_CONTINUOUS  1 //!< continuous tdc_mode: supported on TimeTagger4
+
 /*! \defgroup defdcoffset #defines for dc_offset
  *  \brief dc_offset values for various signal standards
  *
@@ -327,6 +330,17 @@ typedef unsigned char byte;
 #define TIMETAGGER4_DC_OFFSET_N_SSTL_2 -1.25
 /*!@}*/
 
+/*! \ingroup deftriggerindex
+ *  @{
+ */
+#define TIMETAGGER4_TRIGGER_S 0
+#define TIMETAGGER4_TRIGGER_A 1
+#define TIMETAGGER4_TRIGGER_B 2
+#define TIMETAGGER4_TRIGGER_C 3
+#define TIMETAGGER4_TRIGGER_D 4
+#define TIMETAGGER4_TRIGGER_AUTO 14
+#define TIMETAGGER4_TRIGGER_ONE 15
+
 /*! \ingroup deftriggersource
  *  @{
  */
@@ -372,12 +386,7 @@ typedef unsigned char byte;
     1 //!< Timestamp of the rising edge, if not set falling edge
 #define TIMETAGGER4_HIT_FLAG_TIME_OVERFLOW                                     \
     2 //!< Time since start pulse longer than timestamp counter range
-#define TIMETAGGER4_HIT_FLAG_COARSE_TIMESTAMP 4 //!< FPGA coarse time
-#define TIMETAGGER4_HIT_FLAG_TDC_MISSING                                       \
-    4 //!< TDC has not provided a timestamp, FPGA coarse time given instead
-#define TIMETAGGER4_HIT_FLAG_FPGA_MISSING                                      \
-    8 //!< FPGA has not seen the stop event, hit may be out of sequence and
-      //!< belong to an other group
+#define TIMETAGGER4_HIT_FLAG_COARSE_TIMESTAMP 4 //!< coarse time always set for TimeTagger4
 /*!@}*/
 
 /*! \ingroup funcerrors
@@ -632,6 +641,11 @@ typedef tdc4_tiger_block timetagger4_tiger_block;
  */
 typedef tdc4_trigger timetagger4_trigger;
 
+/*! \ingroup delay_config
+ *  \brief Contains configurable delay value
+ */
+typedef tdc4_delay_config timetagger4_delay_config;
+
 /*! \ingroup confstruct Structure timetagger4_configuration
  *  \brief  contains configuration information
  *
@@ -704,11 +718,13 @@ typedef struct {
      *  There are two parameters M = @link auto_trigger_period
      *  auto_trigger_period @endlink and N = @link
      *  auto_trigger_random_exponent auto_trigger_random_exponent @endlink
-     *  that result in a distance between triggers of T clock cycles.
+     *  that result in a interval between triggers of T clock cycles.
      *
-     *          T = 1 + M + [1...2^N]
+     *          T = M + [1...2^N] - 1
      *
-     *          0 <= M < 2^32
+     *  clock cycles.
+     *
+     *          10 <= M < 2^31
      *
      *          0 <= N < 32
      *
@@ -717,12 +733,11 @@ typedef struct {
      */
     int auto_trigger_random_exponent;
     ///@}
-    /** \brief use the autotrigger to replace the ext_sync channel.
-     *
-     * Autotrigger replaces ext_sync to enable continous starts of new packets
-     *
+    ///@}
+    /*! \brief delay in 200 ps bins
+     * must be >= 0 , maximum value of 208 ns
      */
-    crono_bool_t auto_trigger_as_internal_trigger;
+    timetagger4_delay_config delay_config[TDC4_TDC_CHANNEL_COUNT + 1];
 
 } timetagger4_configuration;
 
