@@ -1,5 +1,6 @@
 // timetagger4_user_guide_example.cpp : Example application for the TimeTagger4
 #include <stdio.h>
+#include <stdlib.h>
 #include <chrono>
 #include <thread>
 #include "TimeTagger4_interface.h"
