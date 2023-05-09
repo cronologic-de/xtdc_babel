@@ -71,8 +71,8 @@ int configure_timetagger(timetagger4_device * device) {
 		config.trigger[TIMETAGGER4_TRIGGER_A + i].rising = USE_TIGER_STOPS ? 1 : 0;
 	}
 
-	// generate an internal 200 kHz trigger
-	config.auto_trigger_period = (int)(static_info.auto_trigger_ref_clock / 5000);
+	// generate an internal 200 kHz trigger, used for tiger and continuous mode
+	config.auto_trigger_period = (int)(static_info.auto_trigger_ref_clock / 200000);
 	config.auto_trigger_random_exponent = 0;
 
 	// setup TiGeR
