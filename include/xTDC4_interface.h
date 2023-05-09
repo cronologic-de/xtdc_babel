@@ -296,7 +296,7 @@ typedef unsigned char byte;
  *@{
  */
 #define XTDC4_TDC_MODE_GROUPED 0    //!< grouped tdc_mode
-#define XTDC4_TDC_MODE_CONTINUOUS 1 //!< continuous tdc_mode: not supported yet
+#define XTDC4_TDC_MODE_CONTINUOUS 1 //!< continuous tdc_mode: not supported
 /*!@}*/
 
 /*! \ingroup defdcoffset
