@@ -156,9 +156,8 @@ void print_hit(uint32_t hit, double binsize) {
 	// extract hit timestamp
 	int ts_offset = (hit >> 8 & 0xffffff);
 
-	// TDC bin size is 500 ps. Convert timestamp to ns.
-	double ts_offset_ns = ts_offset;
-	ts_offset_ns *= binsize / 1000.0;
+	// Convert timestamp to ns.
+	double ts_offset_ns = ts_offset * binsize / 1000.0;
 
 	printf("Hit  on channel %c - flags %d - offset %u (raw) / %.1f ns\n", channel, flags, ts_offset, ts_offset_ns);
 }
