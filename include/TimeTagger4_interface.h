@@ -170,6 +170,13 @@ typedef unsigned char byte;
 #define TIMETAGGER4_TDC_MODE_GROUPED 0 //!< grouped tdc_mode
 #define TIMETAGGER4_TDC_MODE_CONTINUOUS  1 //!< continuous tdc_mode: supported on TimeTagger4
 
+/*! \defgroup tdcmode #defines for min max of auto_trigger_period
+ *  \brief tdc_mode can be either grouped or continuous
+ */
+#define TIMETAGGER4_MIN_CONT_AUTO_TRIGGER_PERIOD  31
+#define TIMETAGGER4_MAX_CONT_AUTO_TRIGGER_PERIOD  78125000
+
+
 /*! \defgroup defdcoffset #defines for dc_offset
  *  \brief dc_offset values for various signal standards
  *
@@ -670,10 +677,13 @@ typedef struct {
     int version;
     /*! \brief TDC mode.
      *
-     *  Can be grouped or continuous. Currently supported: grouped.
-     *  Currently only TIMETAGGER4_TDC_MODE_GROUPED is supported.
-     *  This is set per default by timetagger4_get_current_configuration()
-     *  and should be left unchanged.
+     *  Can be grouped (TIMETAGGER4_TDC_MODE_GROUPED default) or continuous
+     *  (TIMETAGGER4_TDC_MODE_CONTINUOUS)
+     *  The auto_trigger_period needs to be set appropriately and
+     *  channel[i].stop must be larger than auto_trigger_period (respecting 
+     *  the different periods, or can be set to maximum of 0xFFFFFFFF), if all events
+     *  need to be captured.
+     *  
      */
     int tdc_mode;
     /*! \brief Not applicable for TimeTagger4
@@ -712,7 +722,7 @@ typedef struct {
         lowres_channel[TIMETAGGER4_LOWRES_CHANNEL_COUNT]; // Not applicable
                                                           // for TimeTagger4
 
-    int auto_trigger_period;
+    uint32_t auto_trigger_period;
     /** \brief Create a trigger either periodically or randomly.
      *
      *  There are two parameters M = @link auto_trigger_period
@@ -731,7 +741,7 @@ typedef struct {
      *  There is no enable or reset as the usage of this trigger can be
      *  configured in the TiGer block channel source field.
      */
-    int auto_trigger_random_exponent;
+    uint32_t auto_trigger_random_exponent;
     ///@}
     ///@}
     /*! \brief delay in 200 ps bins

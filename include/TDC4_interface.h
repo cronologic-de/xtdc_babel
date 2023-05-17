@@ -300,6 +300,11 @@ typedef struct {
      *  used for calculating the auto_trigger_period.
      */
     double auto_trigger_ref_clock;
+    /*! \brief The number of bins in a rollover period
+     *  This is a power of two (the maximum value of a hit timestamp
+     *  is this value minus -1)
+     */
+    uint32_t rollover_period;
 } tdc4_static_info;
 
 /*! \ingroup fastinfo
@@ -363,7 +368,9 @@ typedef struct {
     /*! \brief Binsize (in ps) of the measured TDC data.
      *
      *  The TDC main clk is running at a frequency of 76.8 GHz
-     *  resulting in a binsize of ~13.0208 ps.
+     *  resulting in a binsize of ~13.0208 ps for xTDC4
+     * 
+     *  Timetagger4 bin size depends on the card.
      */
     double binsize;
     /*! \brief Board ID
@@ -383,6 +390,13 @@ typedef struct {
      */
     int channel_mask;
     int64_t total_buffer; //!< The total amount of DMA buffer in bytes.
+
+    /*! \brief Binsize (in ps) of the packet timestamp
+     * For xTDC4 this is 1666.6ps 
+     * For TimeTagger4 packet bin size depends on the card
+     */
+    double packet_binsize;
+
 } tdc4_param_info;
 
 /*! \ingroup channel
@@ -401,12 +415,12 @@ typedef struct {
      *
      *  only timestamps >= start are recorded.
      */
-    int start;
+    uint32_t start;
     /*! \brief Veto function
      *
      *  only timestamps <= stop are recorded.
      */
-    int stop;
+    uint32_t stop;
 
 } tdc4_channel;
 
@@ -419,12 +433,12 @@ typedef struct {
      *
      *  only timestamps >= start are recorded.
      */
-    int start;
+    uint32_t start;
     /*! \brief Veto function
      *
      *  only timestamps <= stop are recorded.
      */
-    int stop;
+    uint32_t stop;
 } tdc4_lowres_channel;
 
 /*! \ingroup delay_config
@@ -435,7 +449,7 @@ typedef struct {
      bins for a channel
      * must be >= 0 , maximum value of 1023 (204 ns)
      */
-    int delay;
+    uint32_t delay;
 } tdc4_delay_config;
 
 /*! \ingroup tiger
@@ -463,13 +477,13 @@ typedef struct {
      *  Number of 6.6ns clock cycles before the tiger output goes active
      *  relative to the trigger signal.
      */
-    int start;
+    uint32_t start;
     /*! \brief postcursor
      *
      *  Number of 6.6ns clock cycles before the tiger output goes inactive
      *  relative to the trigger signal.
      */
-    int stop;
+    uint32_t stop;
     /*! \brief mask for choosing the trigger source
      *
      *  A bit mask with a bit set for all trigger sources that can
@@ -572,7 +586,7 @@ typedef struct {
      *  The clock frequency is specified in static_info.auto_trigger_ref_clock
      */
     ///@{
-    int auto_trigger_period;
+    uint32_t auto_trigger_period;
     /** \brief component to create a trigger either periodically or
      *  randomly.
      *
@@ -592,7 +606,7 @@ typedef struct {
      *  there is no enable or reset as the usage of this trigger can be
      *  configured in the channels.
      */
-    int auto_trigger_random_exponent;
+    uint32_t auto_trigger_random_exponent;
     ///@}
     /** \brief configurable delay of input channels. (currently only used by TimeTagger4)
     * index 0 is start channel, 1-4 are A-D
