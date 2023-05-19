@@ -6,10 +6,12 @@
 #include "TimeTagger4_interface.h"
 
 // if true the time tagger triggers a start periodically
-// else start signal either from input or tiger is used
+// The time difference of signals on channel A are measured
+// else start signal either from input or tiger is used (see below)
+// frequency of  start signal is printed and the hits are sampled
 const bool USE_CONTINUOUS_MODE = false;
-const bool USE_TIGER_START = true; //  USE_CONTINUOUS_MODE takes precedence
-const bool USE_TIGER_STOPS = false;
+const bool USE_TIGER_START = true;	// if false, external signal must be provided on start
+const bool USE_TIGER_STOPS = true; // if false please connect signals to some of channels A-D
 
 
 timetagger4_device * initialize_timetagger(int buffer_size, int board_id, int card_index) {
@@ -71,8 +73,8 @@ int configure_timetagger(timetagger4_device * device) {
 		config.trigger[TIMETAGGER4_TRIGGER_A + i].rising = USE_TIGER_STOPS ? 1 : 0;
 	}
 
-	// generate an internal 200 kHz trigger, used for tiger and continuous mode
-	config.auto_trigger_period = (int)(static_info.auto_trigger_ref_clock / 200000);
+	// generate an internal 25 kHz trigger, used for tiger and continuous mode
+	config.auto_trigger_period = (int)(static_info.auto_trigger_ref_clock / 25000);
 	config.auto_trigger_random_exponent = 0;
 
 	// setup TiGeR
@@ -119,13 +121,15 @@ int configure_timetagger(timetagger4_device * device) {
 		config.tiger_block[i].enable_lemo_output = USE_TIGER_STOPS ? 1 : 0;
 		config.tiger_block[i].sources = TIMETAGGER4_TRIGGER_SOURCE_AUTO;
 
-		// optionally increase input delay by 10 * 200 ps for each channel		
-		// config.delay_config[i].delay = i * 10;
 
 		if (USE_TIGER_STOPS)
 			config.dc_offset[i] = TIMETAGGER4_DC_OFFSET_P_LVCMOS_18;
 		else // user input expect NIM signal
 			config.dc_offset[i] = TIMETAGGER4_DC_OFFSET_N_NIM;		
+
+		// this is not related to the tigers, but uses the same indexing (0 is start)
+		// optionally increase input delay by 10 * 200 ps for each channel on new TT		
+		// config.delay_config[i].delay = i * 10;
 	}
 
 	// write configuration to board
@@ -133,64 +137,91 @@ int configure_timetagger(timetagger4_device * device) {
 }
 
 
-void print_device_information(timetagger4_device * device, double binSize) {
+void print_device_information(timetagger4_device * device, timetagger4_static_info * si, timetagger4_param_info * pi) {
 	// print board information
-	timetagger4_static_info staticinfo;
-	timetagger4_get_static_info(device, &staticinfo);
-	printf("Board Serial        : %d.%d\n", staticinfo.board_serial >> 24, staticinfo.board_serial & 0xffffff);
+	printf("Board Serial        : %d.%d\n", si->board_serial >> 24, si->board_serial & 0xffffff);
 	printf("Board Configuration : %s\n", timetagger4_get_device_name(device));
-	printf("Board Revision      : %d\n", staticinfo.board_revision);
-	printf("Firmware Revision   : %d.%d\n", staticinfo.firmware_revision, staticinfo.subversion_revision);
-	printf("Driver Revision     : %d.%d.%d\n", ((staticinfo.driver_revision >> 16) & 255), ((staticinfo.driver_revision >> 8) & 255), (staticinfo.driver_revision & 255));
-	printf("Driver SVN Revision : %d\n", staticinfo.driver_build_revision);
-	printf("\nTDC binsize         : %0.2f ps\n", binSize);
+	printf("Board Revision      : %d\n", si->board_revision);
+	printf("Firmware Revision   : %d.%d\n", si->firmware_revision, si->subversion_revision);
+	printf("Driver Revision     : %d.%d.%d\n", ((si->driver_revision >> 16) & 255), ((si->driver_revision >> 8) & 255), (si->driver_revision & 255));
+	printf("Driver SVN Revision : %d\n", si->driver_build_revision);
+	printf("\nTDC binsize         : %0.2f ps\n", pi->binsize);
 }
 
-void print_hit(uint32_t hit, double binsize) {
-	// extract channel number (A-D)
-	char channel = 65 + (hit & 0xf);
+double last_abs_ts_on_a = 0;
+int64_t last_group_abs_time = 0;
 
-	// extract hit flags
-	int flags = (hit >> 4 & 0xf);
-
-	// extract hit timestamp
-	int ts_offset = (hit >> 8 & 0xffffff);
-
-	// Convert timestamp to ns.
-	double ts_offset_ns = ts_offset * binsize / 1000.0;
-
-	printf("Hit  on channel %c - flags %d - offset %u (raw) / %.1f ns\n", channel, flags, ts_offset, ts_offset_ns);
-}
-
-int64_t processPacket(int64_t group_abs_time_old, volatile crono_packet *p, int update_count, double binsize) {
+int64_t processPacket(volatile crono_packet *p, bool print, timetagger4_static_info *si, timetagger4_param_info *pi) {
 	// do something with the data, e.g. calculate current rate
 	int64_t group_abs_time = p->timestamp;
-	// group timestamp increments at binsize, but we see only a fraction of the packets (every update_count)
-	double rate = (1e12 / ((double)(group_abs_time - group_abs_time_old) * binsize / (double)update_count));
-	printf("\r%.6f kHz", rate / 1000.0);
+	if (!USE_CONTINUOUS_MODE) {
+		// group timestamp increments at binsize, but we see only a fraction of the packets (every update_count)
+		double rate = 1e12 / ((double)(group_abs_time - last_group_abs_time) * pi->packet_binsize);
+		if (print && last_group_abs_time > 0) {
+			printf("\r%.6f kHz", rate / 1000.0);
+			// ...or print hits (not a good idea at high data rates,
+			printf("Card %d - flags %d - length %d - type %d - TS %llu\n", p->card, p->flags, p->length, p->type, p->timestamp);
+		}
+		last_group_abs_time = group_abs_time;
+	}
 
-	// ...or print hits (not a good idea at high data rates,
-	printf("Card %d - flags %d - length %d - type %d - TS %llu\n", p->card, p->flags, p->length, p->type, p->timestamp);
-
-	// There fit two hits into every 64 bit word. 
-	// The flag with weight 1 tells us, whether the number of hits in the packet is odd
 	int hit_count = 2 * (p->length);
+	// Two hits fit into every 64 bit word. The second in the last word might be empty
+	// This flag  tells us, whether the number of hits in the packet is odd
 	if ((p->flags & TIMETAGGER4_PACKET_FLAG_ODD_HITS) != 0)
 		hit_count -= 1;
 
 	uint32_t* packet_data = (uint32_t*)(p->data);
+	uint32_t rollover_count = 0;
+	// 
+	uint64_t rollover_period_bins = si->rollover_period;
 	for (int i = 0; i < hit_count; i++)
 	{
-		print_hit(packet_data[i], binsize);
+		uint32_t hit = packet_data[i];
+		uint32_t channel = hit & 0xf;
+		// extract hit flags
+		uint32_t flags = hit >> 4 & 0xf;
+
+
+		if ((flags & TIMETAGGER4_HIT_FLAG_TIME_OVERFLOW) != 0) {
+			// this is a overflow of the 23/24 bit counter)
+			rollover_count++;
+		}
+		else {
+			// extract channel number (A-D)
+			char channel_letter = 65 + channel;
+
+			// extract hit timestamp
+			uint32_t ts_offset = hit >> 8 & 0xffffff;
+
+			// Convert timestamp to ns, this is relative to the start of the group
+			double ts_offset_ns = (ts_offset + rollover_count * rollover_period_bins) * pi->binsize / 1000.0;
+
+			if (USE_CONTINUOUS_MODE) {
+				if (channel == 0)
+				{
+					// compute the absolute time by adding the group time in ns
+					double abs_ts_on_a = (group_abs_time * pi->packet_binsize) / 1000 + ts_offset_ns;
+					double diff = abs_ts_on_a - last_abs_ts_on_a;
+					if (last_abs_ts_on_a > 0 && print) {
+						printf("Time difference between hits on A  %.1f ns\n", diff);
+					}
+
+					last_abs_ts_on_a = abs_ts_on_a;
+				}
+			}
+			else {
+				if (print)
+					printf("Hit  on channel %c - flags %d - offset %u (raw) / %.1f ns\n", channel_letter, flags, ts_offset, ts_offset_ns);
+			}
+		}
 	}
-	printf("\n\n");
 	return group_abs_time;
 }
 
 int main(int argc, char* argv[]) {
 	printf("cronologic timetagger4_user_guide_example using driver: %s\n", timetagger4_get_driver_revision_str());
-
-	timetagger4_device * device = initialize_timetagger(8 * 1024 * 1024, 0, 0);
+	timetagger4_device* device = initialize_timetagger(8 * 1024 * 1024, 0, 0);
 	if (device == nullptr) {
 		exit(1);
 	}
@@ -200,11 +231,13 @@ int main(int argc, char* argv[]) {
 		timetagger4_close(device);
 		return status;
 	}
+	timetagger4_static_info static_info;
+	timetagger4_get_static_info(device, &static_info);
+
 	timetagger4_param_info parinfo;
 	timetagger4_get_param_info(device, &parinfo);
-	double binsize = parinfo.binsize;
 
-	print_device_information(device, binsize);
+	print_device_information(device, &static_info, &parinfo);
 
 	// configure readout behaviour
 	timetagger4_read_in read_config;
@@ -238,18 +271,18 @@ int main(int argc, char* argv[]) {
 	int update_count = 100;
 
 	printf("Reading packets:\n");
+	bool no_data_printed = false;
 	// read 10000 packets
-	bool noDataPrinted = false;
 	while (packet_count < 10000)
 	{
-
 		// get pointers to acquired packets
 		status = timetagger4_read(device, &read_config, &read_data);
 		if (status != CRONO_OK) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			if (!noDataPrinted) {
+			// to avoid a lot of lines with no data
+			if (!no_data_printed) {
 				printf(" - No data! -\n");
-				noDataPrinted = true;
+				no_data_printed = true;
 			}
 		}
 		else
@@ -258,12 +291,12 @@ int main(int argc, char* argv[]) {
 			volatile crono_packet* p = read_data.first_packet;
 			while (p <= read_data.last_packet)
 			{
-				// printf is slow, so this demo only processes every 1000th packet
+				// printf is slow, so this demo only processes every nth packet 
 				// your application would of course collect every packet
-				if (packet_count % update_count == 0) {
-					group_abs_time = processPacket(group_abs_time, p, update_count, binsize);
-					noDataPrinted = false;
-				}
+				bool print = packet_count % update_count == 0;
+
+				processPacket( p, print, &static_info, &parinfo);
+				no_data_printed = false;
 				p = crono_next_packet(p);
 				packet_count++;
 			}
@@ -275,6 +308,5 @@ int main(int argc, char* argv[]) {
 
 	// deactivate timetagger4
 	timetagger4_close(device);
-
 	return 0;
 }
