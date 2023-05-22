@@ -298,7 +298,11 @@ typedef unsigned char byte;
 #define XTDC4_TDC_MODE_GROUPED 0    //!< grouped tdc_mode
 #define XTDC4_TDC_MODE_CONTINUOUS 1 //!< continuous tdc_mode: not supported
 /*!@}*/
-
+/*! \defgroup defdefconf #defines for xtdc4_get_default_configuration()
+ * default period of the auuto trigger: 200 kHz
+ * base frequency 150 MHz
+ */
+#define XTDC4_DEFAULT_AUTO_TRIGGER_PERIOD 750
 /*! \ingroup defdcoffset
  *@{
  */
