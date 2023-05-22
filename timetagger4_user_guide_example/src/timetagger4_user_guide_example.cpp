@@ -5,13 +5,13 @@
 #include <thread>
 #include "TimeTagger4_interface.h"
 
-// if true the time tagger triggers a start periodically
+// If true the time tagger triggers a start periodically
 // The time difference of signals on channel A are measured
 // else start signal either from input or tiger is used (see below)
 // frequency of  start signal is printed and the hits are sampled
 const bool USE_CONTINUOUS_MODE = false;
-const bool USE_TIGER_START = true;	// if false, external signal must be provided on start
-const bool USE_TIGER_STOPS = true; // if false please connect signals to some of channels A-D
+const bool USE_TIGER_START = true;	// if false, external signal must be provided on start; not applicable if continuous mode is enabled
+const bool USE_TIGER_STOPS = true; 	// if false please connect signals to some of channels A-D
 
 
 timetagger4_device * initialize_timetagger(int buffer_size, int board_id, int card_index) {
