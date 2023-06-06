@@ -17,10 +17,6 @@
 #ifdef __linux__
 #include <stdarg.h>
 #include <stdint.h>
-#define __int32 int32_t
-#define __int16 int16_t
-typedef signed long int __int64;
-typedef unsigned char byte;
 #endif
 
 /*! \defgroup constants Constants
