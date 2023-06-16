@@ -199,7 +199,7 @@ int main(int argc, char *argv[]) {
         // some book keeping
         int packet_count = 0;
 
-        __int64 group_abs_time = 0;
+        int64_t group_abs_time = 0;
         int update_count = 100;
         double binsize = get_binsize(device);
 
