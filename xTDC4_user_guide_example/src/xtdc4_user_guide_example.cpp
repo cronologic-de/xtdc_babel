@@ -1,22 +1,11 @@
 // xtdc4_user_guide_example.cpp:ExampleapplicationforthexTDC4
 //#include "CronoCommon.h"
 #include "stdio.h"
+#include <chrono>
+#include <thread>
 #include "xTDC4_interface.h"
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-#endif
 
-typedef unsigned int uint32;
-#if defined(_WIN32) || defined(_WIN64)
-typedef unsigned __int64 uint64;
-#endif
 
-#if defined(_WIN32) || defined(_WIN64)
-#define crono_sleep(x) Sleep(x)
-#else
-#include <unistd.h>
-#define crono_sleep(x) usleep(1000 * x)
-#endif
 
 xtdc4_device *initialize_xtdc4(int buffer_size, int board_id, int card_index) {
         // prepare initialization
@@ -122,7 +111,7 @@ void print_device_information(xtdc4_device *device) {
         printf("\nTDC binsize: %0.2f ps\n", get_binsize(device));
 }
 
-void print_hit(uint32 hit, double binsize) {
+void print_hit(uint32_t hit, double binsize) {
         // extract channel number(A−D)
         char channel = 65 + (hit & 0xf);
 
@@ -140,10 +129,10 @@ void print_hit(uint32 hit, double binsize) {
                flags, ts_offset, ts_offset_ns);
 }
 
-__int64 process_packet(__int64 group_abs_time_old, volatile crono_packet *p,
+int64_t process_packet(int64_t group_abs_time_old, volatile crono_packet *p,
                        int update_count, double binsize) {
         // do something with the data, e.g. calculate current rate
-        __int64 group_abs_time = p->timestamp;
+        int64_t group_abs_time = p->timestamp;
         // group timestamp increment s at 2GHz
         double rate =
             (600000000 / ((double)(group_abs_time - group_abs_time_old) /
@@ -161,7 +150,7 @@ __int64 process_packet(__int64 group_abs_time_old, volatile crono_packet *p,
         if ((p->flags & 0x1) == 1)
                 hit_count -= 1;
 
-        uint32 *packet_data = (uint32 *)(p->data);
+        uint32_t *packet_data = (uint32_t*)(p->data);
         for (int i = 0; i < hit_count; i++) {
                 print_hit(packet_data[i], binsize);
         }
@@ -220,8 +209,8 @@ int main(int argc, char *argv[]) {
                 // get pointers to acquired packets
                 status = xtdc4_read(device, &read_config, &read_data);
                 if (status != CRONO_OK) {
-                        crono_sleep(100);
-                        printf("−No data!−\n");
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    printf("−No data!−\n");
                 } else {
                         // iterate over all packets received with the last read
                         volatile crono_packet *p = read_data.first_packet;
