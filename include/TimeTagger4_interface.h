@@ -17,10 +17,6 @@
 #ifdef __linux__
 #include <stdarg.h>
 #include <stdint.h>
-#define __int32 int32_t
-#define __int16 int16_t
-typedef signed long int __int64;
-typedef unsigned char byte;
 #endif
 
 /*! \defgroup constants Constants
@@ -175,7 +171,12 @@ typedef unsigned char byte;
  */
 #define TIMETAGGER4_MIN_CONT_AUTO_TRIGGER_PERIOD  31
 #define TIMETAGGER4_MAX_CONT_AUTO_TRIGGER_PERIOD  78125000
-
+/*! \defgroup defdefconf #defines for timetagger4_get_default_configuration()
+* default trigger period of the auutotrigger:
+* 4 kHz for TimeTagger4-1G/2G (base frequency 250 MHz)
+* 5 kHz for TimeTagger4-1.25G/2.5G/5G/10G (base frequency 312.5 MHz)
+*/
+#define TIMETAGGER4_DEFAULT_AUTO_TRIGGER_PERIOD   62500
 
 /*! \defgroup defdcoffset #defines for dc_offset
  *  \brief dc_offset values for various signal standards

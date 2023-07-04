@@ -393,9 +393,15 @@ typedef struct {
 
     /*! \brief Binsize (in ps) of the packet timestamp
      * For xTDC4 this is 1666.6ps 
-     * For TimeTagger4 packet bin size depends on the card
+     * For TimeTagger4 packet bin size depends on the generation of the board. with 500 ps for Gen1 and 100ps for Gen2 boards.
      */
     double packet_binsize;
+
+    /*! \brief Quantization or the measurement resolution in ps
+     * For xTDC4 this is ~13.0208 ps.
+     * For TimeTagger4 the quantization depends on the card type and can range between 100 and 1000 ps. 
+     */
+    double quantization;
 
 } tdc4_param_info;
 
