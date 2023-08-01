@@ -284,7 +284,7 @@
 /*! \ingroup buffertype
  *@{
  */
-#define XTDC4_BUFFER_ALLOCATE 0 //!< either allocated (only option currently)
+#define XTDC4_BUFFER_ALLOCATE 0     //!< either allocated (only option currently)
 #define XTDC4_BUFFER_USE_PHYSICAL 1 //!< or physical
 /*!@}*/
 
@@ -343,13 +343,10 @@
 /*! \ingroup packflags
  *  @{
  */
-#define XTDC4_PACKET_FLAG_ODD_HITS 1 //!< last 64 bit word contains only one hit
-#define XTDC4_PACKET_FLAG_SLOW_SYNC                                            \
-    2 //!< Start pulse distance larger than timestamp counter range
-#define XTDC4_PACKET_FLAG_START_MISSED                                         \
-    4 //!< The trigger unit has discarded packets due to full FIFO
-#define XTDC4_PACKET_FLAG_SHORTENED                                            \
-    8 //!< The trigger unit has shortend the current packet due to full FIFO
+#define XTDC4_PACKET_FLAG_ODD_HITS 1     //!< last 64 bit word contains only one hit
+#define XTDC4_PACKET_FLAG_SLOW_SYNC 2    //!< Start pulse distance larger than timestamp counter range
+#define XTDC4_PACKET_FLAG_START_MISSED 4 //!< The trigger unit has discarded packets due to full FIFO
+#define XTDC4_PACKET_FLAG_SHORTENED 8    //!< The trigger unit has shortend the current packet due to full FIFO
 /*! \brief DMA FIFO was full
  *
  *  might not result in dropped packets
@@ -365,14 +362,11 @@
 /*! \ingroup packflags
  *  @{
  */
-#define XTDC4_HIT_FLAG_RISING                                                  \
-    1 //!< Timestamp of the rising edge, if not set falling edge
-#define XTDC4_HIT_FLAG_TIME_ROLLOVER                                           \
-    2 //!< Time since start pulse longer than timestamp counter range
+#define XTDC4_HIT_FLAG_RISING 1           //!< Timestamp of the rising edge, if not set falling edge
+#define XTDC4_HIT_FLAG_TIME_ROLLOVER 2    //!< Time since start pulse longer than timestamp counter range
 #define XTDC4_HIT_FLAG_COARSE_TIMESTAMP 4 //!< FPGA coarse time
-#define XTDC4_HIT_FLAG_TDC_MISSING                                             \
-    4 //!< TDC has not provided a timestamp, FPGA coarse time given instead
-#define XTDC4_HIT_FLAG_FPGA_MISSING                                            \
+#define XTDC4_HIT_FLAG_TDC_MISSING 4      //!< TDC has not provided a timestamp, FPGA coarse time given instead
+#define XTDC4_HIT_FLAG_FPGA_MISSING                                                                                    \
     8 //!< FPGA has not seen the stop event, hit may be out of sequence and
       //!< belong to an other group
 /*!@}*/
@@ -531,8 +525,7 @@ XTDC4_API int xtdc4_get_histogram_state(xtdc4_device *device, int channel);
  *  \param *channel is type int
  *  \param *entry is type int
  */
-XTDC4_API int xtdc4_get_histogram_data(xtdc4_device *device, int channel,
-                                       int entry);
+XTDC4_API int xtdc4_get_histogram_data(xtdc4_device *device, int channel, int entry);
 
 /*! \ingroup runtime
  *  \brief start recording histogram, channel 0 is sync, 1 - 4 channels A - D
@@ -574,8 +567,7 @@ XTDC4_API int xtdc4_stop_histogram(xtdc4_device *device, int channel);
  *  @link defack here @endlink. \param *device is type @link xtdc4_device
  *  xtdc4_device @endlink \param *packet is type crono_packet
  */
-XTDC4_API int xtdc4_acknowledge(xtdc4_device *device,
-                                volatile crono_packet *packet);
+XTDC4_API int xtdc4_acknowledge(xtdc4_device *device, volatile crono_packet *packet);
 
 /*! \ingroup staticinfo
  *  \brief Structure contains static information
@@ -594,8 +586,7 @@ typedef tdc4_static_info xtdc4_static_info;
  *  @endlink. \param *device of type xtdc4_device \param *info of type
  *  xtdc4_static_info
  */
-XTDC4_API int xtdc4_get_static_info(xtdc4_device *device,
-                                    xtdc4_static_info *info);
+XTDC4_API int xtdc4_get_static_info(xtdc4_device *device, xtdc4_static_info *info);
 
 /*! \ingroup fastinfo
  *  \brief contains fast dynamic information
@@ -632,8 +623,7 @@ typedef tdc4_param_info xtdc4_param_info;
  *  @endlink. \param *device of type xtdc4_device \param *info of type
  *  xtdc4_device
  */
-XTDC4_API int xtdc4_get_param_info(xtdc4_device *device,
-                                   xtdc4_param_info *info);
+XTDC4_API int xtdc4_get_param_info(xtdc4_device *device, xtdc4_param_info *info);
 
 /*! \ingroup readout
  *  \brief returns most recent error message
@@ -689,8 +679,7 @@ typedef tdc4_configuration xtdc4_configuration;
  *  values are listed @link defdefconf here @endlink. \param *device of type
  *  xtdc4_device \param *config of type xtdc4_configuration
  */
-XTDC4_API int xtdc4_get_default_configuration(xtdc4_device *device,
-                                              xtdc4_configuration *config);
+XTDC4_API int xtdc4_get_default_configuration(xtdc4_device *device, xtdc4_configuration *config);
 /*! \ingroup conffuncts
  *  \brief gets current configuration
  *
@@ -698,8 +687,7 @@ XTDC4_API int xtdc4_get_default_configuration(xtdc4_device *device,
  *  values are listed @link defcurconf here @endlink. \param *device of type
  *  xtdc4_device \param *config of type xtdc4_configuration
  */
-XTDC4_API int xtdc4_get_current_configuration(xtdc4_device *device,
-                                              xtdc4_configuration *config);
+XTDC4_API int xtdc4_get_current_configuration(xtdc4_device *device, xtdc4_configuration *config);
 /*! \ingroup conffuncts
  *  \brief configures xtdc4 device
  *
@@ -709,8 +697,7 @@ XTDC4_API int xtdc4_get_current_configuration(xtdc4_device *device,
  */
 /* the config information is copied, so can be changed after the
 called */
-XTDC4_API int xtdc4_configure(xtdc4_device *device,
-                              xtdc4_configuration *config);
+XTDC4_API int xtdc4_configure(xtdc4_device *device, xtdc4_configuration *config);
 
 /*! \ingroup initfuncts
  *  \brief Returns the number of boards present in the system that are
@@ -740,8 +727,7 @@ XTDC4_API int xtdc4_get_default_init_parameters(xtdc4_init_parameters *init);
  *  **error_message is type char. The buffer for the error message has to
  *  contain at least 80 chars.
  */
-XTDC4_API xtdc4_device *xtdc4_init(xtdc4_init_parameters *params,
-                                   int *error_code, const char **error_message);
+XTDC4_API xtdc4_device *xtdc4_init(xtdc4_init_parameters *params, int *error_code, const char **error_message);
 /*!@}*/
 
 /*! \ingroup readin
@@ -762,8 +748,7 @@ typedef tdc4_read_out xtdc4_read_out;
  *  xtdc4_device \param *in is type xtdc4_read_in \param *out is type
  *  xtdc4_read_out
  */
-XTDC4_API int xtdc4_read(xtdc4_device *device, xtdc4_read_in *in,
-                         xtdc4_read_out *out);
+XTDC4_API int xtdc4_read(xtdc4_device *device, xtdc4_read_in *in, xtdc4_read_out *out);
 
 /*! \ingroup conffuncts
  *  \brief Sets the offsets of FPGA-TDC and main TDC. iserdesOffset[0..3]
@@ -782,8 +767,7 @@ XTDC4_API int xtdc4_set_CC_offsets(xtdc4_device *device, short *iserdesOffset);
  *  \param *device is type xtdc4_device
  *  \param *iserdesOffset is type short[4]
  */
-XTDC4_API int xtdc4_get_current_CC_offsets(xtdc4_device *device,
-                                           short *iserdesOffset);
+XTDC4_API int xtdc4_get_current_CC_offsets(xtdc4_device *device, short *iserdesOffset);
 
 /*! \ingroup conffuncts
  *  \brief Gets the offsets of FPGA-TDC and main TDC measured using the last
@@ -793,9 +777,7 @@ XTDC4_API int xtdc4_get_current_CC_offsets(xtdc4_device *device,
  *  \param *offsets_new is type bool[4]
  *  \param *iserdesOffset is type short[4]
  */
-XTDC4_API int xtdc4_get_measured_CC_offsets(xtdc4_device *device,
-                                            bool *offsets_new,
-                                            short *iserdesOffset);
+XTDC4_API int xtdc4_get_measured_CC_offsets(xtdc4_device *device, bool *offsets_new, short *iserdesOffset);
 
 /*! \ingroup statfuncts
  *  \brief Returns the driver version, same format as
