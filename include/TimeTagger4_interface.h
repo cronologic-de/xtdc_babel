@@ -17,10 +17,6 @@
 #ifdef __linux__
 #include <stdarg.h>
 #include <stdint.h>
-#define __int32 int32_t
-#define __int16 int16_t
-typedef signed long int __int64;
-typedef unsigned char byte;
 #endif
 
 /*! \defgroup constants Constants
@@ -171,13 +167,18 @@ typedef unsigned char byte;
 #define TIMETAGGER4_TDC_MODE_CONTINUOUS  1 //!< continuous tdc_mode: supported on TimeTagger4
 
 /*! \defgroup tdcmode #defines for min max of auto_trigger_period
- *  \brief tdc_mode can be either grouped or continuous
+ *  \brief min max values for autotrigger period when used with continuous mode
  */
 #define TIMETAGGER4_MIN_CONT_AUTO_TRIGGER_PERIOD  31
 #define TIMETAGGER4_MAX_CONT_AUTO_TRIGGER_PERIOD  78125000
+/*! \defgroup defdefconf #defines for timetagger4_get_default_configuration()
+* default trigger period of the auutotrigger:
+* 4 kHz for TimeTagger4-1G/2G (base frequency 250 MHz)
+* 5 kHz for TimeTagger4-1.25G/2.5G/5G/10G (base frequency 312.5 MHz)
+*/
+#define TIMETAGGER4_DEFAULT_AUTO_TRIGGER_PERIOD   62500
 
-
-/*! \defgroup defdcoffset #defines for dc_offset
+/*! \defgroup defdcoffset #defines for dc_offset 
  *  \brief dc_offset values for various signal standards
  *
  *  used by @link timetagger4_configuration timetagger4_configuration
@@ -369,11 +370,11 @@ typedef unsigned char byte;
 #define TIMETAGGER4_PACKET_FLAG_ODD_HITS                                       \
     1 //!< last 64 bit word contains only one hit
 #define TIMETAGGER4_PACKET_FLAG_SLOW_SYNC                                      \
-    2 //!< Start pulse distance larger than timestamp counter range
+    2 //!< Timestamp of a hit is above the range of 8-bit rollover number and 24-bit hit timestamp. The group is closed, all other hits are ignored.
 #define TIMETAGGER4_PACKET_FLAG_START_MISSED                                   \
-    4 //!< The trigger unit has discarded packets due to full FIFO
+    4 //!< The trigger unit has discarded packets due to a full FIFO because the data rate is too high. \indent Starts are missed and stops are potentially in wrong groups.
 #define TIMETAGGER4_PACKET_FLAG_SHORTENED                                      \
-    8 //!< The trigger unit has shortend the current packet due to full FIFO
+    8 //!< The trigger unit has shortened the current packet due to a full pipeline FIFO because the data rate is too high. Stops are missing in the current packet.
 /*! \brief DMA FIFO was full
  *
  *  might not result in dropped packets
