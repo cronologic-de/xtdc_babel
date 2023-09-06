@@ -65,7 +65,6 @@
 #define TDC4_RCLK_75M 1
 #define TDC4_RCLK_150M 2
 
-
 /**
  * Fixed length of calibration date string.
  * calibration date format: YYYY-MM-DD hh:mm
@@ -77,7 +76,6 @@
  * bitstream date format: YYYY-MM-DD hh:mm:ss
  */
 #define TDC4_BITSTREAM_DATE_LEN 20
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -369,7 +367,7 @@ typedef struct {
      *
      *  The TDC main clk is running at a frequency of 76.8 GHz
      *  resulting in a binsize of ~13.0208 ps for xTDC4
-     * 
+     *
      *  Timetagger4 bin size depends on the card.
      */
     double binsize;
@@ -392,14 +390,17 @@ typedef struct {
     int64_t total_buffer; //!< The total amount of DMA buffer in bytes.
 
     /*! \brief Binsize (in ps) of the packet timestamp
-     * For xTDC4 this is 1666.6ps 
-     * For TimeTagger4 packet bin size depends on the generation of the board. with 500 ps for Gen1 and 100ps for Gen2 boards.
+     * For xTDC4 this is 1666.6ps
+     * For TimeTagger4 packet bin size depends on the generation of the board. with 500 ps for Gen1 and 100ps for Gen2
+     * boards.
      */
     double packet_binsize;
 
     /*! \brief Quantization or the measurement resolution in ps
      * For xTDC4 this is ~13.0208 ps.
-     * For TimeTagger4 the quantization depends on the card type and can range between 100 and 1000 ps. 
+     * For TimeTagger4 the quantization depends on the card type and can range between 100 and 1000 ps.
+     * 1G: 1000ps, 2G: 500ps, 1.25G: 800ps, 2.5G: 400ps, 5G: 200ps, 10G: 100ps
+     * This means, that for 1.25G the lower 3 bits in the timestamps are zero.
      */
     double quantization;
 
@@ -409,12 +410,11 @@ typedef struct {
  *  \brief Contains TDC channel settings
  */
 typedef struct {
-    crono_bool_t enabled;   //!< Enable TDC channel.
-    crono_bool_t rising;    //!< Set whether to record rising or falling edges.
-    crono_bool_t cc_enable; //!< Enable carry chain TDC as backup
-    crono_bool_t
-        cc_same_edge; //!< Set whether the carry chain TDC records the same
-                      //!< edge as THS788 (as backup) or opposite edge
+    crono_bool_t enabled;        //!< Enable TDC channel.
+    crono_bool_t rising;         //!< Set whether to record rising or falling edges.
+    crono_bool_t cc_enable;      //!< Enable carry chain TDC as backup
+    crono_bool_t cc_same_edge;   //!< Set whether the carry chain TDC records the same
+                                 //!< edge as THS788 (as backup) or opposite edge
     crono_bool_t ths788_disable; //!< Disable THS788 timestamps
 
     /*! \brief Veto function
@@ -559,18 +559,16 @@ typedef struct {
      *  switching threshold must be set and vice versa.
      */
     double dc_offset[TDC4_TDC_CHANNEL_COUNT + 1];
-    tdc4_trigger trigger[TDC4_TRIGGER_COUNT]; //!< Configuration of external
-                                              //!< trigger sources
-    tdc4_tiger_block tiger_block[TDC4_TIGER_COUNT]; //!< configuration of the
-                                                    //!< timing generator
-    tdc4_channel
-        channel[TDC4_TDC_CHANNEL_COUNT]; //!< configure polaritiy, type and
-                                         //!< threshold for the TDC channels
-    tdc4_lowres_channel
-        lowres_channel[TDC4_LOWRES_CHANNEL_COUNT]; //!< configure polaritiy,
-                                                   //!< type and threshold
-                                                   //!< for the digital
-                                                   //!< channels
+    tdc4_trigger trigger[TDC4_TRIGGER_COUNT];                      //!< Configuration of external
+                                                                   //!< trigger sources
+    tdc4_tiger_block tiger_block[TDC4_TIGER_COUNT];                //!< configuration of the
+                                                                   //!< timing generator
+    tdc4_channel channel[TDC4_TDC_CHANNEL_COUNT];                  //!< configure polaritiy, type and
+                                                                   //!< threshold for the TDC channels
+    tdc4_lowres_channel lowres_channel[TDC4_LOWRES_CHANNEL_COUNT]; //!< configure polaritiy,
+                                                                   //!< type and threshold
+                                                                   //!< for the digital
+                                                                   //!< channels
     /** \brief component to create a trigger either periodically or
      *  randomly.
      *
@@ -615,7 +613,7 @@ typedef struct {
     uint32_t auto_trigger_random_exponent;
     ///@}
     /** \brief configurable delay of input channels. (currently only used by TimeTagger4)
-    * index 0 is start channel, 1-4 are A-D
+     * index 0 is start channel, 1-4 are A-D
      */
     tdc4_delay_config delay_config[TDC4_TDC_CHANNEL_COUNT + 1];
 
@@ -625,9 +623,8 @@ typedef struct {
  *  \brief The parameters of the read commands
  */
 typedef struct {
-    crono_bool_t
-        acknowledge_last_read; //!< xtdc4/timetagger_read automatically
-                               //!< acknowledges packets from the last read
+    crono_bool_t acknowledge_last_read; //!< xtdc4/timetagger_read automatically
+                                        //!< acknowledges packets from the last read
 } tdc4_read_in;
 
 /*! \ingroup strucreadout
