@@ -1,13 +1,7 @@
-//
-// Header file containing structs and #defines specific for TimeTagger4 devices.
-// The current driver version for TimeTagger4 devices is %VERSION%
-//
-
 /*! \file
- *  \brief The functions provided by the API are declared in
- *  TimeTagger4_interface.h.
+ *  \brief  Header file containing structs and #defines specific for TimeTagger4 devices.
+ *   Used in conjunction with xtdc4_driver[_x64].dll
  *
- *  The API is a DLL with C linkage.
  */
 #ifndef TIMETAGGER4_INTERFACE_H
 #define TIMETAGGER4_INTERFACE_H
@@ -57,7 +51,11 @@
  */
 /*! \defgroup buffertype #defines for buffer_type
  *  \brief type of buffer
+ *@{
  */
+#define TIMETAGGER4_BUFFER_ALLOCATE 0     //!< either allocated (only option currently)
+#define TIMETAGGER4_BUFFER_USE_PHYSICAL 1 //!< or physical
+/*!@}*/
 /*! \defgroup devicetype #define for device_type
  */
 /*!@}*/
@@ -162,23 +160,52 @@
  */
 /*! \defgroup tdcmode #defines for tdc_mode
  *  \brief tdc_mode can be either grouped or continuous
- */
-#define TIMETAGGER4_TDC_MODE_GROUPED 0 //!< grouped tdc_mode
-#define TIMETAGGER4_TDC_MODE_CONTINUOUS  1 //!< continuous tdc_mode: supported on TimeTagger4
+    @{
+    */
+#define TIMETAGGER4_TDC_MODE_GROUPED 0    //!< grouped tdc_mode start signal required
+#define TIMETAGGER4_TDC_MODE_CONTINUOUS 1 //!< continuous tdc_mode: supported on TimeTagger4 Gen2, automatic starts
+/*!@}*/
 
-/*! \defgroup tdcmode #defines for min max of auto_trigger_period
+/*! \defgroup defdcoffset
+ * \brief these values are the recommended DC offsets to use for these
+ * signalling standards (normally around half of peak voltage)
+ *@{*/
+#define TIMETAGGER4_DC_OFFSET_P_NIM +0.35
+#define TIMETAGGER4_DC_OFFSET_P_CMOS +1.18
+#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_33 +1.18
+#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_25 +1.18
+#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_18 +0.90
+#define TIMETAGGER4_DC_OFFSET_P_TTL +1.18
+#define TIMETAGGER4_DC_OFFSET_P_LVTTL_33 +1.18
+#define TIMETAGGER4_DC_OFFSET_P_LVTTL_25 +1.18
+#define TIMETAGGER4_DC_OFFSET_P_SSTL_3 +1.18
+#define TIMETAGGER4_DC_OFFSET_P_SSTL_2 +1.18
+#define TIMETAGGER4_DC_OFFSET_N_NIM -0.35
+#define TIMETAGGER4_DC_OFFSET_N_CMOS -1.32
+#define TIMETAGGER4_DC_OFFSET_N_LVCMOS_33 -1.32
+#define TIMETAGGER4_DC_OFFSET_N_LVCMOS_25 -1.25
+#define TIMETAGGER4_DC_OFFSET_N_LVCMOS_18 -0.90
+#define TIMETAGGER4_DC_OFFSET_N_TTL -1.32
+#define TIMETAGGER4_DC_OFFSET_N_LVTTL_33 -1.32
+#define TIMETAGGER4_DC_OFFSET_N_LVTTL_25 -1.25
+#define TIMETAGGER4_DC_OFFSET_N_SSTL_3 -1.32
+#define TIMETAGGER4_DC_OFFSET_N_SSTL_2 -1.25
+/*!@}*/
+
+/*! \defgroup autotriggerlimits #defines for min max of auto_trigger_period
  *  \brief min max values for autotrigger period when used with continuous mode
  */
-#define TIMETAGGER4_MIN_CONT_AUTO_TRIGGER_PERIOD  31
-#define TIMETAGGER4_MAX_CONT_AUTO_TRIGGER_PERIOD  78125000
-/*! \defgroup defdefconf #defines for timetagger4_get_default_configuration()
-* default trigger period of the auutotrigger:
-* 4 kHz for TimeTagger4-1G/2G (base frequency 250 MHz)
-* 5 kHz for TimeTagger4-1.25G/2.5G/5G/10G (base frequency 312.5 MHz)
-*/
-#define TIMETAGGER4_DEFAULT_AUTO_TRIGGER_PERIOD   62500
+#define TIMETAGGER4_MIN_CONT_AUTO_TRIGGER_PERIOD 31
+#define TIMETAGGER4_MAX_CONT_AUTO_TRIGGER_PERIOD 78125000
 
-/*! \defgroup defdcoffset #defines for dc_offset 
+/*! \defgroup defdefconf #defines for timetagger4_get_default_configuration()
+ * default trigger period of the autotrigger:
+ * 4 kHz for TimeTagger4-1G/2G (base frequency 250 MHz)
+ * 5 kHz for TimeTagger4-1.25G/2.5G/5G/10G (base frequency 312.5 MHz)
+ */
+#define TIMETAGGER4_DEFAULT_AUTO_TRIGGER_PERIOD 62500
+
+/*! \defgroup defdcoffset #defines for dc_offset
  *  \brief dc_offset values for various signal standards
  *
  *  used by @link timetagger4_configuration timetagger4_configuration
@@ -188,13 +215,40 @@
 /*! \defgroup trigger Structure timetagger4_trigger
  *  \brief contains trigger settings
  */
+/*! \defgroup deftriggerindex
+ * \brief The index of the specific trigger in the trigger array of the config
+ * structure
+ *  @{
+ */
+#define TIMETAGGER4_TRIGGER_S 0
+#define TIMETAGGER4_TRIGGER_A 1
+#define TIMETAGGER4_TRIGGER_B 2
+#define TIMETAGGER4_TRIGGER_C 3
+#define TIMETAGGER4_TRIGGER_D 4
+#define TIMETAGGER4_TRIGGER_AUTO 14
+#define TIMETAGGER4_TRIGGER_ONE 15
+/*!@}*/
+
 /*! \defgroup tiger Structure timetagger4_tiger_block
  *  \brief contains settings of timing generator
  * @{
  */
 /*! \defgroup deftriggersource #defines for sources
- *  \brief mask for choosing the trigger source
+ *  \brief The bit flag for the sources field in timetagger4_tiger_block
+ * structure
+ *  @{
  */
+#define TIMETAGGER4_TRIGGER_SOURCE_S 0x00000001
+#define TIMETAGGER4_TRIGGER_SOURCE_A 0x00000002
+#define TIMETAGGER4_TRIGGER_SOURCE_B 0x00000004
+#define TIMETAGGER4_TRIGGER_SOURCE_C 0x00000008
+#define TIMETAGGER4_TRIGGER_SOURCE_D 0x00000010
+#define TIMETAGGER4_TRIGGER_SOURCE_S1 0x00000020
+#define TIMETAGGER4_TRIGGER_SOURCE_S2 0x00000040
+#define TIMETAGGER4_TRIGGER_SOURCE_GATE 0x00000080
+#define TIMETAGGER4_TRIGGER_SOURCE_AUTO 0x00004000
+#define TIMETAGGER4_TRIGGER_SOURCE_ONE 0x00008000
+/*!@}*/
 /*!@}*/
 /*! \defgroup channel Structure timetagger4_channel
  *  \brief contains TDC channel settings
@@ -261,7 +315,40 @@
  */
 /*! \defgroup packflags Packet Flags
  *  \brief flags of the packet reporting error conditions
+ *  @{
  */
+#define TIMETAGGER4_PACKET_FLAG_ODD_HITS 1 //!< last 64 bit word contains only one hit
+#define TIMETAGGER4_PACKET_FLAG_SLOW_SYNC                                                                              \
+    2 //!< Timestamp of a hit is above the range of 8-bit rollover number and 24-bit hit timestamp. The group is closed,
+      //!< all other hits are ignored.
+#define TIMETAGGER4_PACKET_FLAG_START_MISSED                                                                           \
+    4 //!< The trigger unit has discarded packets due to a full FIFO because the
+      //!< data rate is too high.  Starts are missed and stops are
+      //!< potentially in wrong groups.
+#define TIMETAGGER4_PACKET_FLAG_SHORTENED                                                                              \
+    8 //!< The trigger unit has shortened the current packet due to a full
+      //!< pipeline FIFO because the data rate is too high. Stops are missing in
+      //!< the current packet.
+/*! \brief DMA FIFO was full
+ *
+ *  The internal DMA FIFO was full. This is caused either because the data rate is too high on too many channels. Packet loss is possible. */
+#define TIMETAGGER4_PACKET_FLAG_DMA_FIFO_FULL 16
+/*! \brief Host buffer was full
+ *
+ *  Might result in dropped packets. This is caused either because the data rate is too high
+ * or by data not being retrieved fast enough from the buffer. Solutions are increasing buffer size if the overload is
+ * temporary or by avoiding or optimizing any additional processing in the code that reads the data. */
+#define TIMETAGGER4_PACKET_FLAG_HOST_BUFFER_FULL 32
+/*!@}*/
+
+/*! \defgroup hitflag
+* \brief Flags on each hit, that provide detailed information
+ *  @{
+ */
+#define TIMETAGGER4_HIT_FLAG_RISING 1           //!< Timestamp of the rising edge, if not set falling edge
+#define TIMETAGGER4_HIT_FLAG_TIME_OVERFLOW 2    //!< Time since start pulse longer than timestamp counter range
+#define TIMETAGGER4_HIT_FLAG_COARSE_TIMESTAMP 4 //!< coarse time always set for TimeTagger4
+/*!@}*/
 
 // current version of the API
 #define TIMETAGGER4_API_VERSION TDC4_API_VERSION
@@ -276,10 +363,12 @@
  *  - @link confstruct timetagger4_configuration::channel @endlink
  */
 #define TIMETAGGER4_TDC_CHANNEL_COUNT 4
-/* unsupported */
+/*! \brief Unsupported, there are no additional channels on the TimeTagger4,
+the additional fields in the cards are for compatibility with xTDC4
+and are ignored*/
 #define TIMETAGGER4_LOWRES_CHANNEL_COUNT 3
 /*! \brief The number of timing generators. One for each TDC input and one for
- *  the Start input.
+ *  the Start input (index 0)
  *
  *  used by
  *  - @link confstruct timetagger4_configuration::tiger_block[] @endlink
@@ -294,107 +383,6 @@
  *  - @link confstruct timetagger4_configuration::trigger[] @endlink
  */
 #define TIMETAGGER4_TRIGGER_COUNT 16 // including "config" for AUTO and ONE
-/*!@}*/
-
-/*! \ingroup buffertype
- *@{
- */
-#define TIMETAGGER4_BUFFER_ALLOCATE                                            \
-    0 //!< either allocated (only option currently)
-#define TIMETAGGER4_BUFFER_USE_PHYSICAL 1 //!< or physical
-/*!@}*/
-
-/*! \ingroup tdcmode
- *@{
- */
-#define TIMETAGGER4_TDC_MODE_GROUPED 0 //!< grouped tdc_mode
-#define TIMETAGGER4_TDC_MODE_CONTINUOUS                                        \
-    1 //!< continuous tdc_mode: not supported yet
-/*!@}*/
-
-/*! \ingroup defdcoffset
- *@{
- */
-// INPUT_BASELINE is 1.32V
-#define TIMETAGGER4_DC_OFFSET_P_NIM +0.35
-#define TIMETAGGER4_DC_OFFSET_P_CMOS +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_33 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_25 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_18 +0.90
-#define TIMETAGGER4_DC_OFFSET_P_TTL +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVTTL_33 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVTTL_25 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_SSTL_3 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_SSTL_2 +1.18
-#define TIMETAGGER4_DC_OFFSET_N_NIM -0.35
-#define TIMETAGGER4_DC_OFFSET_N_CMOS -1.32
-#define TIMETAGGER4_DC_OFFSET_N_LVCMOS_33 -1.32
-#define TIMETAGGER4_DC_OFFSET_N_LVCMOS_25 -1.25
-#define TIMETAGGER4_DC_OFFSET_N_LVCMOS_18 -0.90
-#define TIMETAGGER4_DC_OFFSET_N_TTL -1.32
-#define TIMETAGGER4_DC_OFFSET_N_LVTTL_33 -1.32
-#define TIMETAGGER4_DC_OFFSET_N_LVTTL_25 -1.25
-#define TIMETAGGER4_DC_OFFSET_N_SSTL_3 -1.32
-#define TIMETAGGER4_DC_OFFSET_N_SSTL_2 -1.25
-/*!@}*/
-
-/*! \ingroup deftriggerindex
- *  @{
- */
-#define TIMETAGGER4_TRIGGER_S 0
-#define TIMETAGGER4_TRIGGER_A 1
-#define TIMETAGGER4_TRIGGER_B 2
-#define TIMETAGGER4_TRIGGER_C 3
-#define TIMETAGGER4_TRIGGER_D 4
-#define TIMETAGGER4_TRIGGER_AUTO 14
-#define TIMETAGGER4_TRIGGER_ONE 15
-
-/*! \ingroup deftriggersource
- *  @{
- */
-#define TIMETAGGER4_TRIGGER_SOURCE_S 0x00000001
-#define TIMETAGGER4_TRIGGER_SOURCE_A 0x00000002
-#define TIMETAGGER4_TRIGGER_SOURCE_B 0x00000004
-#define TIMETAGGER4_TRIGGER_SOURCE_C 0x00000008
-#define TIMETAGGER4_TRIGGER_SOURCE_D 0x00000010
-#define TIMETAGGER4_TRIGGER_SOURCE_S1 0x00000020
-#define TIMETAGGER4_TRIGGER_SOURCE_S2 0x00000040
-#define TIMETAGGER4_TRIGGER_SOURCE_GATE 0x00000080
-#define TIMETAGGER4_TRIGGER_SOURCE_AUTO 0x00004000
-#define TIMETAGGER4_TRIGGER_SOURCE_ONE 0x00008000
-/*!@}*/
-
-/*! \ingroup packflags
- *  @{
- */
-#define TIMETAGGER4_PACKET_FLAG_ODD_HITS                                       \
-    1 //!< last 64 bit word contains only one hit
-#define TIMETAGGER4_PACKET_FLAG_SLOW_SYNC                                      \
-    2 //!< Timestamp of a hit is above the range of 8-bit rollover number and 24-bit hit timestamp. The group is closed, all other hits are ignored.
-#define TIMETAGGER4_PACKET_FLAG_START_MISSED                                   \
-    4 //!< The trigger unit has discarded packets due to a full FIFO because the data rate is too high. \indent Starts are missed and stops are potentially in wrong groups.
-#define TIMETAGGER4_PACKET_FLAG_SHORTENED                                      \
-    8 //!< The trigger unit has shortened the current packet due to a full pipeline FIFO because the data rate is too high. Stops are missing in the current packet.
-/*! \brief DMA FIFO was full
- *
- *  might not result in dropped packets
- */
-#define TIMETAGGER4_PACKET_FLAG_DMA_FIFO_FULL 16
-/*! \brief Host buffer was full
- *
- *  might not result in dropped packets
- */
-#define TIMETAGGER4_PACKET_FLAG_HOST_BUFFER_FULL 32
-/*!@}*/
-
-/*! \ingroup packflags
- *  @{
- */
-#define TIMETAGGER4_HIT_FLAG_RISING                                            \
-    1 //!< Timestamp of the rising edge, if not set falling edge
-#define TIMETAGGER4_HIT_FLAG_TIME_OVERFLOW                                     \
-    2 //!< Time since start pulse longer than timestamp counter range
-#define TIMETAGGER4_HIT_FLAG_COARSE_TIMESTAMP 4 //!< coarse time always set for TimeTagger4
 /*!@}*/
 
 /*! \ingroup funcerrors
@@ -436,10 +424,13 @@
  *  - @link defread timetagger4_read() @endlink
  */
 #define TIMETAGGER4_INVALID_DEVICE 5
-#define TIMETAGGER4_BUFFER_ALLOC_FAILED 6        //!< NOT IMPLEMENTED
-#define TIMETAGGER4_TDC_NO_EDGE_FOUND 7          //!< NOT IMPLEMENTED
-#define TIMETAGGER4_INVALID_BUFFER_PARAMETERS 8  //!< NOT IMPLEMENTED
-#define TIMETAGGER4_INVALID_CONFIG_PARAMETERS 9  //!< NOT IMPLEMENTED
+#define TIMETAGGER4_BUFFER_ALLOC_FAILED 6       //!< NOT IMPLEMENTED
+#define TIMETAGGER4_TDC_NO_EDGE_FOUND 7         //!< NOT IMPLEMENTED
+#define TIMETAGGER4_INVALID_BUFFER_PARAMETERS 8 //!< NOT IMPLEMENTED
+/*! \brief invalid parameters to timetagger4_configure
+ *
+ */
+#define TIMETAGGER4_INVALID_CONFIG_PARAMETERS 9
 #define TIMETAGGER4_WINDOW_CALIBRATION_FAILED 10 //!< NOT IMPLEMENTED
 #define TIMETAGGER4_HARDWARE_FAILURE 11          //!< NOT IMPLEMENTED
 #define TIMETAGGER4_INVALID_TDC_MODE 12          //!< NOT IMPLEMENTED
@@ -554,8 +545,7 @@ TIMETAGGER4_API int timetagger4_stop_capture(timetagger4_device *device);
  *@endlink. \param *device is type @link timetagger4_device timetagger4_device
  *@endlink \param *packet is type crono_packet
  */
-TIMETAGGER4_API int timetagger4_acknowledge(timetagger4_device *device,
-                                            volatile crono_packet *packet);
+TIMETAGGER4_API int timetagger4_acknowledge(timetagger4_device *device, volatile crono_packet *packet);
 
 /*! \ingroup staticinfo
  *  \brief Structure contains static information
@@ -574,8 +564,7 @@ typedef tdc4_static_info timetagger4_static_info;
  *  @endlink. \param *device of type timetagger4_device \param *info of type
  *  timetagger4_static_info
  */
-TIMETAGGER4_API int timetagger4_get_static_info(timetagger4_device *device,
-                                                timetagger4_static_info *info);
+TIMETAGGER4_API int timetagger4_get_static_info(timetagger4_device *device, timetagger4_static_info *info);
 
 /*! \ingroup fastinfo
  *  \brief contains fast dynamic information
@@ -593,8 +582,7 @@ typedef tdc4_fast_info timetagger4_fast_info;
  *  deffastinfo here @endlink. \param *device of type timetagger4_device \param
  *  *info of type timetagger4_fast_info
  */
-TIMETAGGER4_API int timetagger4_get_fast_info(timetagger4_device *device,
-                                              timetagger4_fast_info *info);
+TIMETAGGER4_API int timetagger4_get_fast_info(timetagger4_device *device, timetagger4_fast_info *info);
 
 /*! \ingroup paraminfo
  *  \brief contains configuration changes
@@ -613,15 +601,13 @@ typedef tdc4_param_info timetagger4_param_info;
  *  @endlink. \param *device of type timetagger4_device \param *info of type
  *  timetagger4_device
  */
-TIMETAGGER4_API int timetagger4_get_param_info(timetagger4_device *device,
-                                               timetagger4_param_info *info);
+TIMETAGGER4_API int timetagger4_get_param_info(timetagger4_device *device, timetagger4_param_info *info);
 
 /*! \ingroup readout
  *  \brief Returns most recent error message
  *  \param *device is type timetagger4_device
  */
-TIMETAGGER4_API const char *
-timetagger4_get_last_error_message(timetagger4_device *device);
+TIMETAGGER4_API const char *timetagger4_get_last_error_message(timetagger4_device *device);
 
 /*! \ingroup readout
  *  \brief Returns the type of the device
@@ -678,18 +664,13 @@ typedef struct {
     int version;
     /*! \brief TDC mode.
      *
-     *  Can be grouped (TIMETAGGER4_TDC_MODE_GROUPED default) or continuous
-     *  (TIMETAGGER4_TDC_MODE_CONTINUOUS)
-     *  The auto_trigger_period needs to be set appropriately and
-     *  channel[i].stop must be larger than auto_trigger_period (respecting 
-     *  the different periods, or can be set to maximum of 0xFFFFFFFF), if all events
-     *  need to be captured.
-     *  
+     *  Can be grouped (TIMETAGGER4_TDC_MODE_GROUPED default) or continuous (TIMETAGGER4_TDC_MODE_CONTINUOUS)
+     *  The auto_trigger_period needs to be set appropriately and channel[i].stop must be larger than
+     * auto_trigger_period (respecting the different periods, or can be set to maximum of 0xFFFFFFFF), if all events
+     * need to be captured.
      */
     int tdc_mode;
     /*! \brief Not applicable for TimeTagger4
-     *
-     *
      */
     crono_bool_t start_rising;
     /*! \brief Set DAC channels for S, A - D.
@@ -709,19 +690,14 @@ typedef struct {
      *  must be set and vice versa.
      */
     double dc_offset[TIMETAGGER4_TDC_CHANNEL_COUNT + 1];
-    timetagger4_trigger
-        trigger[TIMETAGGER4_TRIGGER_COUNT]; //!< Configuration of external
-                                            //!< trigger sources
-    timetagger4_tiger_block
-        tiger_block[TIMETAGGER4_TIGER_COUNT]; //!< configuration of the
-                                              //!< timing generator (TiGeR)
-    timetagger4_channel
-        channel[TIMETAGGER4_TDC_CHANNEL_COUNT]; //!< configure polaritiy,
-                                                //!< type and threshold for
-                                                //!< the TDC channels
-    timetagger4_lowres_channel
-        lowres_channel[TIMETAGGER4_LOWRES_CHANNEL_COUNT]; // Not applicable
-                                                          // for TimeTagger4
+    timetagger4_trigger trigger[TIMETAGGER4_TRIGGER_COUNT];                      //!< Configuration of external
+                                                                                 //!< trigger sources
+    timetagger4_tiger_block tiger_block[TIMETAGGER4_TIGER_COUNT];                //!< configuration of the
+                                                                                 //!< timing generator (TiGeR)
+    timetagger4_channel channel[TIMETAGGER4_TDC_CHANNEL_COUNT];                  //!< configure polaritiy,
+                                                                                 //!< type and threshold for
+                                                                                 //!< the TDC channels
+    timetagger4_lowres_channel lowres_channel[TIMETAGGER4_LOWRES_CHANNEL_COUNT]; // Not applicable for TimeTagger4
 
     uint32_t auto_trigger_period;
     /** \brief Create a trigger either periodically or randomly.
@@ -759,9 +735,8 @@ typedef struct {
  *  values are listed @link defdefconf here @endlink. \param *device of type
  *  timetagger4_device \param *config of type timetagger4_configuration
  */
-TIMETAGGER4_API int
-timetagger4_get_default_configuration(timetagger4_device *device,
-                                      timetagger4_configuration *config);
+TIMETAGGER4_API int timetagger4_get_default_configuration(timetagger4_device *device,
+                                                          timetagger4_configuration *config);
 /*! \ingroup conffuncts
  *  \brief Gets current configuration.
  *
@@ -769,9 +744,8 @@ timetagger4_get_default_configuration(timetagger4_device *device,
  *  values are listed @link defcurconf here @endlink. \param *device of type
  *  timetagger4_device \param *config of type timetagger4_configuration
  */
-TIMETAGGER4_API int
-timetagger4_get_current_configuration(timetagger4_device *device,
-                                      timetagger4_configuration *config);
+TIMETAGGER4_API int timetagger4_get_current_configuration(timetagger4_device *device,
+                                                          timetagger4_configuration *config);
 /*! \ingroup conffuncts
  *  \brief Configures the TimeTagger4 device
  *
@@ -780,16 +754,14 @@ timetagger4_get_current_configuration(timetagger4_device *device,
  *  \param *config of type timetagger4_configuration
  */
 /* the config information is copied, so can be changed after the called */
-TIMETAGGER4_API int timetagger4_configure(timetagger4_device *device,
-                                          timetagger4_configuration *config);
+TIMETAGGER4_API int timetagger4_configure(timetagger4_device *device, timetagger4_configuration *config);
 
 /*! \ingroup initfuncts
  *  \brief Returns the number of boards present in the system that are
  *  supported by this driver. \param *error_code is type int \param
  *  **error_message is type const char
  */
-TIMETAGGER4_API int timetagger4_count_devices(int *error_code,
-                                              const char **error_message);
+TIMETAGGER4_API int timetagger4_count_devices(int *error_code, const char **error_message);
 
 /*! \ingroup initfuncts
  * @{
@@ -802,8 +774,7 @@ TIMETAGGER4_API int timetagger4_count_devices(int *error_code,
  *  Return values are listed @link defdefinpar here @endlink. \param init is
  *  type *timetagger4_init_parameters
  */
-TIMETAGGER4_API int
-timetagger4_get_default_init_parameters(timetagger4_init_parameters *init);
+TIMETAGGER4_API int timetagger4_get_default_init_parameters(timetagger4_init_parameters *init);
 /*! \brief Opens and initializes the TimeTagger4 board with the given index.
  *
  *  With error_code and error_message the user must provide pointers to
@@ -813,9 +784,8 @@ timetagger4_get_default_init_parameters(timetagger4_init_parameters *init);
  *  **error_message is type char. The buffer for the error message has to
  *  contain at least 80 chars.
  */
-TIMETAGGER4_API timetagger4_device *
-timetagger4_init(timetagger4_init_parameters *params, int *error_code,
-                 const char **error_message);
+TIMETAGGER4_API timetagger4_device *timetagger4_init(timetagger4_init_parameters *params, int *error_code,
+                                                     const char **error_message);
 /*!@}*/
 
 /*! \ingroup readin
@@ -838,9 +808,7 @@ typedef tdc4_read_out timetagger4_read_out;
  *  timetagger4_device \param *in is type timetagger4_read_in \param *out is
  *  type timetagger4_read_out
  */
-TIMETAGGER4_API int timetagger4_read(timetagger4_device *device,
-                                     timetagger4_read_in *in,
-                                     timetagger4_read_out *out);
+TIMETAGGER4_API int timetagger4_read(timetagger4_device *device, timetagger4_read_in *in, timetagger4_read_out *out);
 
 /*! \ingroup statfuncts
  *  \brief Returns the driver version, same format as
