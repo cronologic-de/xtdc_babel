@@ -791,6 +791,21 @@ XTDC4_API int xtdc4_get_driver_revision();
  *  string. This function does not require a xTDC4 board to be present.
  */
 XTDC4_API const char *xtdc4_get_driver_revision_str();
+
+/*! \defgroup pciefuncts Functions for PCIe information
+ *	\brief reads the PCIe info like correctable and uncorrectable
+ *
+ */
+XTDC4_API int xtdc4_get_pcie_info(xtdc4_device *device, crono_pcie_info *pcie_info);
+
+/*!
+ *	\brief clear pci errors, only useful for PCIE problem debuggin
+ *  flags
+ *  CRONO_PCIE_CORRECTABLE_FLAG clear all correctable errors
+ *  CRONO_PCIE_UNCORRECTABLE_FLAG clear all uncorrectable errors
+ */
+XTDC4_API int xtdc4_clear_pcie_errors(xtdc4_device *device, int flags);
+
 #ifdef __cplusplus
 }
 #endif
