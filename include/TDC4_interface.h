@@ -26,7 +26,7 @@
 #define TDC4_STATIC_INFO_VERSION 2
 #define TDC4_FAST_INFO_VERSION 2
 #define TDC4_PARAM_INFO_VERSION 1
-#define TDC4_DEVICE_CONFIG_VERSION 1
+#define TDC4_DEVICE_CONFIG_VERSION 2
 
 /*! \brief the number of analog input channels
  *
@@ -616,6 +616,9 @@ typedef struct {
      * index 0 is start channel, 1-4 are A-D
      */
     tdc4_delay_config delay_config[TDC4_TDC_CHANNEL_COUNT + 1];
+    /*! \brief ignore packets which do not contain hits. These packets are not written to the ringbuffer.
+     */
+    uint32_t ignore_empty_packets;
 
 } tdc4_configuration;
 

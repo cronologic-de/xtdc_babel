@@ -331,7 +331,8 @@
       //!< the current packet.
 /*! \brief DMA FIFO was full
  *
- *  The internal DMA FIFO was full. This is caused either because the data rate is too high on too many channels. Packet loss is possible. */
+ *  The internal DMA FIFO was full. This is caused either because the data rate is too high on too many channels. Packet
+ * loss is possible. */
 #define TIMETAGGER4_PACKET_FLAG_DMA_FIFO_FULL 16
 /*! \brief Host buffer was full
  *
@@ -342,7 +343,7 @@
 /*!@}*/
 
 /*! \defgroup hitflag
-* \brief Flags on each hit, that provide detailed information
+ * \brief Flags on each hit, that provide detailed information
  *  @{
  */
 #define TIMETAGGER4_HIT_FLAG_RISING 1           //!< Timestamp of the rising edge, if not set falling edge
@@ -725,6 +726,9 @@ typedef struct {
      * must be >= 0 , maximum value of 208 ns
      */
     timetagger4_delay_config delay_config[TDC4_TDC_CHANNEL_COUNT + 1];
+    /*! \brief ignore packets which do not contain hits. These packets are not written to the ringbuffer.
+     */
+    uint32_t ignore_empty_packets;
 
 } timetagger4_configuration;
 
@@ -827,6 +831,21 @@ TIMETAGGER4_API const char *timetagger4_get_device_name(timetagger4_device *devi
  *  string. This function does not require a TimeTagger4 board to be present.
  */
 TIMETAGGER4_API const char *timetagger4_get_driver_revision_str();
+
+/*! \defgroup pciefuncts Functions for PCIe information
+ *	\brief reads the PCIe info like correctable and uncorrectable
+ *
+ */
+TIMETAGGER4_API int timetagger4_get_pcie_info(timetagger4_device *device, crono_pcie_info *pcie_info);
+
+/*!
+ *	\brief clear pci errors, only useful for PCIE problem debuggin
+ *  flags
+ *  CRONO_PCIE_CORRECTABLE_FLAG clear all correctable errors
+ *  CRONO_PCIE_UNCORRECTABLE_FLAG clear all uncorrectable errors
+ */
+TIMETAGGER4_API int timetagger4_clear_pcie_errors(timetagger4_device *device, int flags);
+
 #ifdef __cplusplus
 }
 #endif
