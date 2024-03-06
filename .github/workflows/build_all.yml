@@ -27,11 +27,11 @@ jobs:
       
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Get changed files in concerned folder(s)
       id: changed-files-specific
-      uses: tj-actions/changed-files@v35
+      uses: tj-actions/changed-files@v42
       with:
         files: |
           lib/**
@@ -59,7 +59,7 @@ jobs:
         
     - name: Checkout Code
       if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
@@ -69,7 +69,7 @@ jobs:
         cmake --build ${{env.BUILD_PATH}}
         
     - name: Archive output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
           name: xTDC4-Ubuntu-ug_ex
           path: lib/x64/xtdc4_ugex
@@ -86,7 +86,7 @@ jobs:
         
     - name: Checkout Code
       if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
@@ -96,7 +96,7 @@ jobs:
         cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}
         
     - name: Archive output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
           name: xTDC4-Ubuntu-ug_ex
           path: lib/x64/Release/xtdc4_ugex.exe
@@ -109,11 +109,11 @@ jobs:
       
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Get changed files in concerned folder(s)
       id: changed-files-specific
-      uses: tj-actions/changed-files@v35
+      uses: tj-actions/changed-files@v4
       with:
         files: |
           lib/**
@@ -141,7 +141,7 @@ jobs:
         
     - name: Checkout Code
       if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
@@ -151,7 +151,7 @@ jobs:
         cmake --build ${{env.BUILD_PATH}}
 
     - name: Archive output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
           name: xTDC4-Ubuntu-timetagger_ex
           path: lib/x64/timetagger4_user_guide_example
@@ -168,7 +168,7 @@ jobs:
         
     - name: Checkout Code
       if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
@@ -178,7 +178,7 @@ jobs:
         cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}
         
     - name: Archive output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
           name: xTDC4-Ubuntu-timetagger_ex
           path: lib/x64/Release/timetagger4_user_guide_example.exe
