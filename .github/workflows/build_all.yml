@@ -71,7 +71,7 @@ jobs:
     - name: Archive output
       uses: actions/upload-artifact@v4
       with:
-          name: xTDC4-Ubuntu-ug_ex
+          name: xTDC4-Ubuntu-ug_ex-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
           path: lib/x64/xtdc4_ugex
         
   Build-xTDC4-Win:
@@ -98,7 +98,7 @@ jobs:
     - name: Archive output
       uses: actions/upload-artifact@v4
       with:
-          name: xTDC4-Ubuntu-ug_ex
+          name: xTDC4-Ubuntu-ug_ex-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
           path: lib/x64/Release/xtdc4_ugex.exe
 
   Check-Build-timetagger4_user_guide_example:
@@ -153,7 +153,7 @@ jobs:
     - name: Archive output
       uses: actions/upload-artifact@v4
       with:
-          name: xTDC4-Ubuntu-timetagger_ex
+          name: xTDC4-Ubuntu-timetagger_ex-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
           path: lib/x64/timetagger4_user_guide_example
           
   Build-TimeTagger-Win:
@@ -180,6 +180,6 @@ jobs:
     - name: Archive output
       uses: actions/upload-artifact@v4
       with:
-          name: xTDC4-Ubuntu-timetagger_ex
+          name: xTDC4-Ubuntu-timetagger_ex-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
           path: lib/x64/Release/timetagger4_user_guide_example.exe
         
