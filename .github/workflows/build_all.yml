@@ -31,7 +31,7 @@ jobs:
       
     - name: Get changed files in concerned folder(s)
       id: changed-files-specific
-      uses: tj-actions/changed-files@v4
+      uses: tj-actions/changed-files@v42
       with:
         files: |
           lib/**
@@ -113,9 +113,8 @@ jobs:
       
     - name: Get changed files in concerned folder(s)
       id: changed-files-specific
-      uses: tj-actions/changed-files@v4
+      uses: tj-actions/changed-files@v42
       with:
-        fetch-depth: 0
         files: |
           lib/**
           include/**
