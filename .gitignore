@@ -1,6 +1,7 @@
 build
 build_old
 .vs
+.vscode
 conanmanifest.txt
 conanbuildinfo.txt
 conaninfo.txt
