@@ -151,8 +151,8 @@ To build the project, run
 The code is linked to the shared library `libxtdc4_driver.so`.
 
 ### Run the Example
-1. `Cronologic PCI Linux Kernel Module` is installed on the machine. You can
-   build it from
+1. `Cronologic PCI Linux Kernel Module` needs to be installed on the machine.
+   You can build it from
    [`cronologic_linux_kernel`](https://github.com/cronologic-de/cronologic_linux_kernel)
    on GitHub.
 
