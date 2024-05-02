@@ -34,7 +34,7 @@ Visual Studio 2019 (or later).
 1. Copy the `driver` folder from the `xTDC4` driver installation folder
    (e.g., `C:\Program Files\cronologic\xTDC4`) to the
    `xTDC4_user_guide_example` folder. If the driver is not already
-   installed, you can install it from
+   installed, you can install it from the
    [product page](https://www.cronologic.de/products/tdcs/timetagger).
 2. [`CMake`](https://cmake.org/install/) is installed.
 
