@@ -27,7 +27,7 @@ This code is created entirely by cronologic GmbH & Co. KG. All rights reserved.
 
 ## Build and Run the Project on Windows
 
-You can build the project using either `CMake` directly, or using
+You can build the project using either `CMake` directly or using
 Visual Studio 2019 (or later).
 
 ### Prerequisites
