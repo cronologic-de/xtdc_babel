@@ -3,7 +3,7 @@
 ## About
 
 ### Overview
-This directory contains a project to compile the C++ example show in the user
+This directory contains a project to compile the C++ example shown in the user
 guide of the [cronologic](https://www.cronologic.de) TimeTagger time-to-digital
 converter.
 
@@ -31,10 +31,10 @@ You can build the project using either `CMake` directly or using
 Visual Studio 2019 (or later).
 
 ### Prerequisites
-1. Copy the `driver` folder from the `TimeTagger` driver installation folder
+1. Copy the `driver` folder from the TimeTagger's driver installation folder
    (e.g., `C:\Program Files\cronologic\TimeTagger4`) to the
    `timetagger4_user_guide_example` folder. If the driver is not already
-   installed, you can install it from the
+   installed, you can download the installer from the TimeTagger
    [product page](https://www.cronologic.de/products/tdcs/timetagger).
 2. [`CMake`](https://cmake.org/install/) is installed.
 
