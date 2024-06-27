@@ -712,9 +712,11 @@ typedef struct {
      *
      *  clock cycles.
      *
-     *          10 <= M < 2^31
+     *          M_min <= M < 2^31
      *
      *          0 <= N < 32
+     *
+     *  M_min is 6 for Gen1 and 8 for Gen2.
      *
      *  There is no enable or reset as the usage of this trigger can be
      *  configured in the TiGer block channel source field.

@@ -324,7 +324,22 @@
 #define XTDC4_DC_OFFSET_N_SSTL_3 -1.32
 #define XTDC4_DC_OFFSET_N_SSTL_2 -1.25
 /*!@}*/
-
+/*! \defgroup trigger Structure xtdc4_trigger
+ *  \brief contains trigger settings
+ */
+/*! \defgroup deftriggerindex
+ * \brief The index of the specific trigger in the trigger array of the config
+ * structure
+ *  @{
+ */
+#define XTDC4_TRIGGER_S 0
+#define XTDC4_TRIGGER_A 1
+#define XTDC4_TRIGGER_B 2
+#define XTDC4_TRIGGER_C 3
+#define XTDC4_TRIGGER_D 4
+#define XTDC4_TRIGGER_AUTO 14
+#define XTDC4_TRIGGER_ONE 15
+/*!@}*/
 /*! \ingroup deftriggersource
  *  @{
  */
