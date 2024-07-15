@@ -77,6 +77,13 @@
  */
 #define TDC4_BITSTREAM_DATE_LEN 20
 
+/**
+ * Maximum and minimum dc offsets for TDC4 in Volt. 
+ */
+#define TDC4_DC_OFFSET_MAX 1.13
+#define TDC4_DC_OFFSET_MIN -1.27
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -548,7 +555,7 @@ typedef struct {
      *
      *  dc_offset[1 - 4] : A - D
      *
-     *  Set to a value between -1.65V and +0.85V. This should be close
+     *  Set to a value between -1.27V and +1.13V. This should be close
      *  to 50% of the height of your pulses on the inputs. Examples for
      *  various signaling standards are defined in @link defdcoffset #defines
      *  for dc_offset @endlink. The inputs are AC coupled. This means that for
