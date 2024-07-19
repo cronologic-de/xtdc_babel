@@ -80,8 +80,8 @@
 /**
  * Maximum and minimum dc offsets for TDC4 in Volt. 
  */
-#define TDC4_DC_OFFSET_MAX 1.13
-#define TDC4_DC_OFFSET_MIN -1.27
+#define TDC4_DC_OFFSET_MAX 1.18
+#define TDC4_DC_OFFSET_MIN -1.32
 
 
 #ifdef __cplusplus
