@@ -171,24 +171,24 @@
  * signalling standards (normally around half of peak voltage)
  *@{*/
 #define TIMETAGGER4_DC_OFFSET_P_NIM +0.35
-#define TIMETAGGER4_DC_OFFSET_P_CMOS +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_33 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_25 +1.18
+#define TIMETAGGER4_DC_OFFSET_P_CMOS +1.13
+#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_33 +1.13
+#define TIMETAGGER4_DC_OFFSET_P_LVCMOS_25 +1.13
 #define TIMETAGGER4_DC_OFFSET_P_LVCMOS_18 +0.90
-#define TIMETAGGER4_DC_OFFSET_P_TTL +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVTTL_33 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_LVTTL_25 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_SSTL_3 +1.18
-#define TIMETAGGER4_DC_OFFSET_P_SSTL_2 +1.18
+#define TIMETAGGER4_DC_OFFSET_P_TTL +1.13
+#define TIMETAGGER4_DC_OFFSET_P_LVTTL_33 +1.13
+#define TIMETAGGER4_DC_OFFSET_P_LVTTL_25 +1.13
+#define TIMETAGGER4_DC_OFFSET_P_SSTL_3 +1.13
+#define TIMETAGGER4_DC_OFFSET_P_SSTL_2 +1.13
 #define TIMETAGGER4_DC_OFFSET_N_NIM -0.35
-#define TIMETAGGER4_DC_OFFSET_N_CMOS -1.32
-#define TIMETAGGER4_DC_OFFSET_N_LVCMOS_33 -1.32
+#define TIMETAGGER4_DC_OFFSET_N_CMOS -1.27
+#define TIMETAGGER4_DC_OFFSET_N_LVCMOS_33 -1.27
 #define TIMETAGGER4_DC_OFFSET_N_LVCMOS_25 -1.25
 #define TIMETAGGER4_DC_OFFSET_N_LVCMOS_18 -0.90
-#define TIMETAGGER4_DC_OFFSET_N_TTL -1.32
-#define TIMETAGGER4_DC_OFFSET_N_LVTTL_33 -1.32
+#define TIMETAGGER4_DC_OFFSET_N_TTL -1.27
+#define TIMETAGGER4_DC_OFFSET_N_LVTTL_33 -1.27
 #define TIMETAGGER4_DC_OFFSET_N_LVTTL_25 -1.25
-#define TIMETAGGER4_DC_OFFSET_N_SSTL_3 -1.32
+#define TIMETAGGER4_DC_OFFSET_N_SSTL_3 -1.27
 #define TIMETAGGER4_DC_OFFSET_N_SSTL_2 -1.25
 /*!@}*/
 
@@ -680,7 +680,7 @@ typedef struct {
      *
      *  dc_offset[1 - 4] : threshold for channels A - D
      *
-     *  Supported range is -1.32V to +1.18V. This should be close to 50%
+     *  Supported range is -1.27V to +1.13V. This should be close to 50%
      *  of the height of the input pulse. Examples for various signaling
      *  standards are defined as follows @link defdcoffset #defines for
      *  dc_offset @endlink. The inputs are AC coupled. Thus, the
@@ -712,9 +712,11 @@ typedef struct {
      *
      *  clock cycles.
      *
-     *          10 <= M < 2^31
+     *          M_min <= M < 2^31
      *
      *          0 <= N < 32
+     *
+     *  M_min is 6 for Gen1 and 8 for Gen2.
      *
      *  There is no enable or reset as the usage of this trigger can be
      *  configured in the TiGer block channel source field.
