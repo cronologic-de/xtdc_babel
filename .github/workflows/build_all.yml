@@ -69,6 +69,11 @@ jobs:
       if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
       uses: actions/checkout@v4
 
+    - name: Pull latest changes
+      if: ${{needs.Check-Build-UG_EX.outputs.ok_to_proceed != 'N' }}
+      run: |
+        git pull --rebase
+
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
       run: |
@@ -105,6 +110,11 @@ jobs:
     - name: Checkout Code
       if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
       uses: actions/checkout@v4
+
+    - name: Pull latest changes
+      if: ${{needs.Check-Build-UG_EX.outputs.ok_to_proceed != 'N' }}
+      run: |
+        git pull --rebase
 
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
@@ -173,6 +183,11 @@ jobs:
       if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed != 'N' }}
       uses: actions/checkout@v4
 
+    - name: Pull latest changes
+      if: ${{needs.Check-Build-UG_EX.outputs.ok_to_proceed != 'N' }}
+      run: |
+        git pull --rebase
+
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed != 'N' }}
       run: |
@@ -209,6 +224,11 @@ jobs:
     - name: Checkout Code
       if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed != 'N' }}
       uses: actions/checkout@v4
+
+    - name: Pull latest changes
+      if: ${{needs.Check-Build-UG_EX.outputs.ok_to_proceed != 'N' }}
+      run: |
+        git pull --rebase
 
     - name: Configure CMake and Build
       if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed != 'N' }}
