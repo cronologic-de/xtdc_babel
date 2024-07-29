@@ -30,37 +30,25 @@ set(CRONO_DEP_PKG_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_SRC_INDIR}/include)
 include_directories(${CRONO_TARGET_NAME} PRIVATE  ${CRONO_DEP_PKG_INC_DIR})
 
 # Link to xtdc4_driver library ________________________________________
-set(CRONO_DEP_PKG_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_SRC_INDIR}/lib/x64)
-link_directories(${CRONO_DEP_PKG_LIB_DIR})
+set(CRONO_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_SRC_INDIR}/lib)
+set(CRONO_BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${PROJ_SRC_INDIR}/bin)
+link_directories(${CRONO_LIB_DIR})
 
-# Set output directory_________________________________________________________
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CRONO_DEP_PKG_LIB_DIR})
-
-# Validate that directories exist _____________________________________________
-IF(     NOT EXISTS "${CRONO_DEP_PKG_LIB_DIR}" 
-     OR NOT EXISTS "${CRONO_DEP_PKG_INC_DIR}"
-) 
-        message(FATAL_ERROR 
-                "Crono: Please copy driver installation folder <TimeTagger4/driver> to the project root.")
-ENDIF()
-        
 # Add the target  _____________________________________________________________
-add_executable(${CRONO_TARGET_NAME} 
-        ${PROJ_SRC_INDIR}/src/xtdc4_user_guide_example.cpp)
+add_executable(${CRONO_TARGET_NAME} ${PROJ_SRC_INDIR}/src/xtdc4_user_guide_example.cpp)
+
+set_target_properties(${CRONO_TARGET_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CRONO_BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CRONO_BIN_DIR}
+)
 
 # Windows-specific Configurations _____________________________________________
 IF ( CRONO_GEN_PLATFORM  STREQUAL "windows")
-    add_library(xtdc4_driver_64 SHARED IMPORTED GLOBAL)
-    set_target_properties(xtdc4_driver_64 PROPERTIES IMPORTED_IMPLIB 
-            xtdc4_driver_64.lib)  
     target_link_libraries(${CRONO_TARGET_NAME} xtdc4_driver_64)
 
 # Linux-specific Configurations _______________________________________________
 ELSEIF (CRONO_GEN_PLATFORM STREQUAL "linux") 
-    # Compilation options _____________________________________________________
     add_compile_options(-fPIC -Wall $<$<CONFIG:Debug>:-g>)
     add_compile_definitions($<$<CONFIG:Debug>:CRONO_DEBUG_ENABLED>)
-
-    # Link to xtdc4_driver library ____________________________________________
-    target_link_libraries(${CRONO_TARGET_NAME} libxtdc4_driver.so)
+    target_link_libraries(${CRONO_TARGET_NAME} "${CRONO_BIN_DIR}/libxtdc4_driver.so")
 ENDIF()

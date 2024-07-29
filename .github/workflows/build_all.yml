@@ -8,18 +8,21 @@ on:
     - 'timetagger4_user_guide_example/**'
     - 'xTDC4_user_guide_example/**'
     - '.github/workflows/build_all.yml'
+    - '.github/workflows/**'
     
 env:
   BUILD_TYPE: Release
-  SOLUTION_FILE_PATH: .\dummy\msvscpp\
   COMMIT_MSG: 'Internal build due to code change' 
   XTDC4_TOOLS_SUB_DIR: 'xTDC4_user_guide_example/tools'
   TIMETAGGER_TOOLS_SUB_DIR: 'timetagger4_user_guide_example/tools'
-  BUILD_PATH: '../build/bfRU'
+  CRONO_BIN_PATH: ./bin/
+  BUILD_PATH: '../build/bfR'
 
 jobs:
 
-  Check-Build-xTDC4_user_guide_example:
+  # ===========================================================================
+  #
+  Check-Build-xTDC4_UG_EX:
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
@@ -47,61 +50,90 @@ jobs:
         echo "No concerned files changed, suppressing processing."       
         echo "ok_to_proceed_val=N" >> $GITHUB_OUTPUT
 
-  Build-xTDC4-Ubuntu:
-    needs: Check-Build-xTDC4_user_guide_example
+  # ___________________________________________________________________________
+  # 
+  xTDC4_UG_EX-Linux-Build:
+    needs: Check-Build-xTDC4_UG_EX
     runs-on: ubuntu-latest
+
+    env: 
+      CRONO_EXE_NAME: xtdc4_ugex
 
     steps:
     - name: echo Suppress Status if Needed
-      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed == 'N' }}
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed == 'N' }}
       run: |
         echo "Job execution processing is suppressed for no cencerned files are changed."
         
     - name: Checkout Code
-      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
       uses: actions/checkout@v4
 
+    - name: Pull latest changes
+      if: ${{needs.Check-Build-UG_EX.outputs.ok_to_proceed != 'N' }}
+      run: |
+        git pull --rebase
+
     - name: Configure CMake and Build
-      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
       run: |
         cd ${{env.XTDC4_TOOLS_SUB_DIR}}
         cmake -B ${{env.BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake --build ${{env.BUILD_PATH}}
         
-    - name: Archive output
-      uses: actions/upload-artifact@v3
+    - name: Commit Executable
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
+      uses: EndBug/add-and-commit@v9
       with:
-          name: xTDC4-Ubuntu-ug_ex-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
-          path: lib/x64/xtdc4_ugex
-        
-  Build-xTDC4-Win:
-    needs: Check-Build-xTDC4_user_guide_example
+          author_name: Internal Workflow Action
+          message: ${{env.COMMIT_MSG}}
+          add: ${{env.CRONO_BIN_PATH}}${{env.CRONO_EXE_NAME}} --force
+
+  # ___________________________________________________________________________
+  # 
+  xTDC4_UG_EX-Win-Build:
+    needs: 
+     - Check-Build-xTDC4_UG_EX
+     - xTDC4_UG_EX-Linux-Build  # Guarnatee Sequential Build
+
     runs-on:  windows-latest
+
+    env: 
+      CRONO_EXE_NAME: xtdc4_ugex.exe
 
     steps:
     - name: echo Suppress Status if Needed
-      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed == 'N' }}
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed == 'N' }}
       run: |
         echo "Job execution processing is suppressed for no cencerned files are changed."
         
     - name: Checkout Code
-      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
       uses: actions/checkout@v4
 
+    - name: Pull latest changes
+      if: ${{needs.Check-Build-UG_EX.outputs.ok_to_proceed != 'N' }}
+      run: |
+        git pull --rebase
+
     - name: Configure CMake and Build
-      if: ${{needs.Check-Build-xTDC4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
       run: |
         cd ${{env.XTDC4_TOOLS_SUB_DIR}}
         cmake -B ${{env.BUILD_PATH}}
         cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}
-        
-    - name: Archive output
-      uses: actions/upload-artifact@v3
+              
+    - name: Commit Executable
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
+      uses: EndBug/add-and-commit@v9
       with:
-          name: xTDC4-Ubuntu-ug_ex-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
-          path: lib/x64/Release/xtdc4_ugex.exe
+          author_name: Internal Workflow Action
+          message: ${{env.COMMIT_MSG}}
+          add: ${{env.CRONO_BIN_PATH}}${{env.CRONO_EXE_NAME}} --force
 
-  Check-Build-timetagger4_user_guide_example:
+  # ===========================================================================
+  #
+  Check-Build-TT4_UG_EX:
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
@@ -129,57 +161,86 @@ jobs:
         echo "No concerned files changed, suppressing processing."       
         echo "ok_to_proceed_val=N" >> $GITHUB_OUTPUT
 
-  Build-TimeTagger-Ubuntu:
-    needs: Check-Build-timetagger4_user_guide_example
+  # ___________________________________________________________________________
+  # 
+  TT4_UG_EX-Linux-Build:
+    needs: 
+     - Check-Build-TT4_UG_EX
+     - xTDC4_UG_EX-Win-Build  # Guarnatee Sequential Build
+
     runs-on: ubuntu-latest
+
+    env: 
+      CRONO_EXE_NAME: timetagger4_user_guide_example
 
     steps:
     - name: echo Suppress Status if Needed
-      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed == 'N' }}
+      if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed == 'N' }}
       run: |
         echo "Job execution processing is suppressed for no cencerned files are changed."
         
     - name: Checkout Code
-      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed != 'N' }}
       uses: actions/checkout@v4
 
+    - name: Pull latest changes
+      if: ${{needs.Check-Build-UG_EX.outputs.ok_to_proceed != 'N' }}
+      run: |
+        git pull --rebase
+
     - name: Configure CMake and Build
-      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed != 'N' }}
       run: |
         cd ${{env.TIMETAGGER_TOOLS_SUB_DIR}}
         cmake -B ${{env.BUILD_PATH}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake --build ${{env.BUILD_PATH}}
 
-    - name: Archive output
-      uses: actions/upload-artifact@v3
+    - name: Commit Executable
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
+      uses: EndBug/add-and-commit@v9
       with:
-          name: xTDC4-Ubuntu-timetagger_ex-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
-          path: lib/x64/timetagger4_user_guide_example
-          
-  Build-TimeTagger-Win:
-    needs: Check-Build-timetagger4_user_guide_example
+          author_name: Internal Workflow Action
+          message: ${{env.COMMIT_MSG}}
+          add: ${{env.CRONO_BIN_PATH}}${{env.CRONO_EXE_NAME}} --force
+
+  # ___________________________________________________________________________
+  # 
+  TT4_UG_EX-Win-Build:
+    needs: 
+     - Check-Build-TT4_UG_EX
+     - TT4_UG_EX-Linux-Build  # Guarnatee Sequential Build
+
     runs-on: windows-latest
+
+    env: 
+      CRONO_EXE_NAME: timetagger4_user_guide_example.exe
 
     steps:
     - name: echo Suppress Status if Needed
-      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed == 'N' }}
+      if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed == 'N' }}
       run: |
         echo "Job execution processing is suppressed for no cencerned files are changed."
         
     - name: Checkout Code
-      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed != 'N' }}
       uses: actions/checkout@v4
 
+    - name: Pull latest changes
+      if: ${{needs.Check-Build-UG_EX.outputs.ok_to_proceed != 'N' }}
+      run: |
+        git pull --rebase
+
     - name: Configure CMake and Build
-      if: ${{needs.Check-Build-timetagger4_user_guide_example.outputs.ok_to_proceed != 'N' }}
+      if: ${{needs.Check-Build-TT4_UG_EX.outputs.ok_to_proceed != 'N' }}
       run: |
         cd ${{env.TIMETAGGER_TOOLS_SUB_DIR}}
         cmake -B ${{env.BUILD_PATH}}
-        cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}
-        
-    - name: Archive output
-      uses: actions/upload-artifact@v3
+        cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}    
+
+    - name: Commit Executable
+      if: ${{needs.Check-Build-xTDC4_UG_EX.outputs.ok_to_proceed != 'N' }}
+      uses: EndBug/add-and-commit@v9
       with:
-          name: xTDC4-Ubuntu-timetagger_ex-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
-          path: lib/x64/Release/timetagger4_user_guide_example.exe
-        
+          author_name: Internal Workflow Action
+          message: ${{env.COMMIT_MSG}}
+          add: ${{env.CRONO_BIN_PATH}}${{env.CRONO_EXE_NAME}} --force
