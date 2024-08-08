@@ -1,4 +1,20 @@
 name: Build All Projects
+#
+# Every build job:
+# - Is responsible for building one project, and committing the output 
+#   to the repository.
+# - Needs a relevant `Check-xyz` job to check if pushed files are concerned 
+#   files or NOT, if NOT then every step in the job will be bypassed.
+# - Needs the previous (orderd as written in the file here) build job to 
+#   guarantee a sequential run.
+#   Reason: since every job commits to the repository, if these jobs run concurrently
+#   then commit fails, even if there is no "technical" dependnecy between them.
+#   One drawback that if a build job fails, next jobs won't run. 
+#   Another one is the longer time taken.
+# - Should pull output of the previous job(s), to avoid error: 
+#   `tip of your current branch is behind its remote counterpart`
+# - Doesn't run when triggered by a tag, since all code is built and output is saved
+#   in the repository already with the last `main` update workflow.
 
 on:
   push:
@@ -22,8 +38,33 @@ jobs:
 
   # ===========================================================================
   #
+  # If triggered by a new tag then no need to run any job. As outputs saved 
+  # on main are supposed to be latest once built from the latest update.
+  #
+  Check-Trigger:
+    runs-on: ubuntu-latest
+    outputs:
+      is_tag: ${{ steps.check.outputs.is_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check if triggered by a tag
+        id: check
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "is_tag=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_tag=false" >> $GITHUB_OUTPUT
+          fi
+          
+  # ===========================================================================
+  #
   Check-Build-xTDC4_UG_EX:
     runs-on: ubuntu-latest
+    needs: Check-Trigger
+    if: ${{ needs.Check-Trigger.outputs.is_tag == 'false' }}
+
     # Map a step output to a job output
     outputs:
       ok_to_proceed: ${{ steps.check.outputs.ok_to_proceed_val }}
@@ -53,8 +94,11 @@ jobs:
   # ___________________________________________________________________________
   # 
   xTDC4_UG_EX-Linux-Build:
-    needs: Check-Build-xTDC4_UG_EX
     runs-on: ubuntu-latest
+    if: ${{ needs.Check-Trigger.outputs.is_tag == 'false' }}
+    needs: 
+    - Check-Trigger
+    - Check-Build-xTDC4_UG_EX
 
     env: 
       CRONO_EXE_NAME: xtdc4_ugex
@@ -92,11 +136,12 @@ jobs:
   # ___________________________________________________________________________
   # 
   xTDC4_UG_EX-Win-Build:
+    runs-on:  windows-latest
+    if: ${{ needs.Check-Trigger.outputs.is_tag == 'false' }}
     needs: 
+     - Check-Trigger
      - Check-Build-xTDC4_UG_EX
      - xTDC4_UG_EX-Linux-Build  # Guarnatee Sequential Build
-
-    runs-on:  windows-latest
 
     env: 
       CRONO_EXE_NAME: xtdc4_ugex.exe
@@ -135,6 +180,9 @@ jobs:
   #
   Check-Build-TT4_UG_EX:
     runs-on: ubuntu-latest
+    needs: Check-Trigger
+    if: ${{ needs.Check-Trigger.outputs.is_tag == 'false' }}
+    
     # Map a step output to a job output
     outputs:
       ok_to_proceed: ${{ steps.check.outputs.ok_to_proceed_val }}
@@ -164,11 +212,12 @@ jobs:
   # ___________________________________________________________________________
   # 
   TT4_UG_EX-Linux-Build:
-    needs: 
-     - Check-Build-TT4_UG_EX
-     - xTDC4_UG_EX-Win-Build  # Guarnatee Sequential Build
-
     runs-on: ubuntu-latest
+    if: ${{ needs.Check-Trigger.outputs.is_tag == 'false' }}
+    needs: 
+    - Check-Trigger
+    - Check-Build-TT4_UG_EX
+    - xTDC4_UG_EX-Win-Build  # Guarnatee Sequential Build
 
     env: 
       CRONO_EXE_NAME: timetagger4_user_guide_example
@@ -206,11 +255,12 @@ jobs:
   # ___________________________________________________________________________
   # 
   TT4_UG_EX-Win-Build:
-    needs: 
-     - Check-Build-TT4_UG_EX
-     - TT4_UG_EX-Linux-Build  # Guarnatee Sequential Build
-
     runs-on: windows-latest
+    if: ${{ needs.Check-Trigger.outputs.is_tag == 'false' }}
+    needs: 
+    - Check-Trigger
+    - Check-Build-TT4_UG_EX
+    - TT4_UG_EX-Linux-Build  # Guarnatee Sequential Build
 
     env: 
       CRONO_EXE_NAME: timetagger4_user_guide_example.exe
