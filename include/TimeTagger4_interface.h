@@ -402,9 +402,8 @@ and are ignored*/
  *  - @link defcurconf timetagger4_get_current_configuration() @endlink
  */
 #define TIMETAGGER4_OK 0
-#define TIMETAGGER4_WINDRIVER_NOT_FOUND 1 //!< NOT IMPLEMENTED
-#define TIMETAGGER4_DEVICE_NOT_FOUND 2    //!< NOT IMPLEMENTED
-#define TIMETAGGER4_NOT_INITIALIZED 3     //!< NOT IMPLEMENTED
+#define TIMETAGGER4_DEVICE_NOT_FOUND 2
+#define TIMETAGGER4_NOT_INITIALIZED 3
 
 /*! \brief invalid pointer
  *
@@ -425,18 +424,16 @@ and are ignored*/
  *  - @link defread timetagger4_read() @endlink
  */
 #define TIMETAGGER4_INVALID_DEVICE 5
-#define TIMETAGGER4_BUFFER_ALLOC_FAILED 6       //!< NOT IMPLEMENTED
-#define TIMETAGGER4_TDC_NO_EDGE_FOUND 7         //!< NOT IMPLEMENTED
-#define TIMETAGGER4_INVALID_BUFFER_PARAMETERS 8 //!< NOT IMPLEMENTED
+#define TIMETAGGER4_BUFFER_ALLOC_FAILED 6
+#define TIMETAGGER4_INVALID_BUFFER_PARAMETERS 8
 /*! \brief invalid parameters to timetagger4_configure
  *
  */
 #define TIMETAGGER4_INVALID_CONFIG_PARAMETERS 9
-#define TIMETAGGER4_WINDOW_CALIBRATION_FAILED 10 //!< NOT IMPLEMENTED
-#define TIMETAGGER4_HARDWARE_FAILURE 11          //!< NOT IMPLEMENTED
-#define TIMETAGGER4_INVALID_TDC_MODE 12          //!< NOT IMPLEMENTED
-#define TIMETAGGER4_SYNCHRONIZATION_FAILED 13    //!< NOT IMPLEMENTED
-#define TIMETAGGER4_DEVICE_OPEN_FAILED 14        //!< NOT IMPLEMENTED
+#define TIMETAGGER4_HARDWARE_FAILURE 11
+#define TIMETAGGER4_DEVICE_OPEN_FAILED 14
+#define TIMETAGGER4_CRONO_INTERNAL_ERROR 15
+#define TIMETAGGER4_CRONO_INVALID_ARGUMENTS 17
 /*!@}*/
 
 /*! \ingroup defparaminfo
@@ -793,6 +790,19 @@ TIMETAGGER4_API int timetagger4_get_default_init_parameters(timetagger4_init_par
 TIMETAGGER4_API timetagger4_device *timetagger4_init(timetagger4_init_parameters *params, int *error_code,
                                                      const char **error_message);
 /*!@}*/
+
+/*! \ingroup deferror
+ *  \brief read error codes
+ *
+ *  assignments of the error codes for the timetagger4_read
+ *  @{
+ */
+#define CRONO_READ_OK 0
+#define CRONO_READ_NO_DATA 1
+#define CRONO_READ_INTERNAL_ERROR 2 //!< Error in buffer handling, must restart
+#define CRONO_READ_TIMEOUT 3        //!< Not used yet
+#define CRONO_READ_WRONG_STATE 4
+#define CRONO_READ_INVALID_ARGUMENTS 5
 
 /*! \ingroup readin
  *  \brief The parameters of the read commands
