@@ -291,8 +291,7 @@
 /*! \ingroup tdcmode
  *@{
  */
-#define XTDC4_TDC_MODE_GROUPED 0    //!< grouped tdc_mode
-#define XTDC4_TDC_MODE_CONTINUOUS 1 //!< continuous tdc_mode: not supported
+#define XTDC4_TDC_MODE_GROUPED 0 //!< grouped tdc_mode
 /*!@}*/
 /*! \defgroup defdefconf #defines for xtdc4_get_default_configuration()
  * default period of the auuto trigger: 200 kHz
@@ -402,9 +401,8 @@
  *  - @link defcurconf xtdc4_get_current_configuration() @endlink
  */
 #define XTDC4_OK 0
-#define XTDC4_WINDRIVER_NOT_FOUND 1 //!< NOT IMPLEMENTED
-#define XTDC4_DEVICE_NOT_FOUND 2    //!< NOT IMPLEMENTED
-#define XTDC4_NOT_INITIALIZED 3     //!< NOT IMPLEMENTED
+#define XTDC4_DEVICE_NOT_FOUND 2
+#define XTDC4_NOT_INITIALIZED 3
 
 /*! \brief invalid pointer
  *
@@ -425,15 +423,14 @@
  *  - @link defread xtdc4_read() @endlink
  */
 #define XTDC4_INVALID_DEVICE 5
-#define XTDC4_BUFFER_ALLOC_FAILED 6        //!< NOT IMPLEMENTED
-#define XTDC4_TDC_NO_EDGE_FOUND 7          //!< NOT IMPLEMENTED
-#define XTDC4_INVALID_BUFFER_PARAMETERS 8  //!< NOT IMPLEMENTED
-#define XTDC4_INVALID_CONFIG_PARAMETERS 9  //!< NOT IMPLEMENTED
-#define XTDC4_WINDOW_CALIBRATION_FAILED 10 //!< NOT IMPLEMENTED
-#define XTDC4_HARDWARE_FAILURE 11          //!< NOT IMPLEMENTED
-#define XTDC4_INVALID_TDC_MODE 12          //!< NOT IMPLEMENTED
-#define XTDC4_SYNCHRONIZATION_FAILED 13    //!< NOT IMPLEMENTED
-#define XTDC4_DEVICE_OPEN_FAILED 14        //!< NOT IMPLEMENTED
+#define XTDC4_BUFFER_ALLOC_FAILED 6
+#define XTDC4_INVALID_BUFFER_PARAMETERS 8
+#define XTDC4_INVALID_CONFIG_PARAMETERS 9
+#define XTDC4_HARDWARE_FAILURE 11
+#define XTDC4_SYNCHRONIZATION_FAILED 13
+#define XTDC4_DEVICE_OPEN_FAILED 14
+#define XTDC4_CRONO_INTERNAL_ERROR 15
+#define XTDC4_CRONO_INVALID_ARGUMENTS 17
 /*!@}*/
 
 /*! \ingroup defparaminfo
@@ -568,6 +565,8 @@ XTDC4_API int xtdc4_stop_histogram(xtdc4_device *device, int channel);
 #define CRONO_READ_NO_DATA 1
 #define CRONO_READ_INTERNAL_ERROR 2 //!< Error in buffer handling, must restart
 #define CRONO_READ_TIMEOUT 3        //!< Not used yet
+#define CRONO_READ_WRONG_STATE 4
+#define CRONO_READ_INVALID_ARGUMENTS 5
 /*!@}*/
 
 /*! \ingroup readout
@@ -744,6 +743,17 @@ XTDC4_API int xtdc4_get_default_init_parameters(xtdc4_init_parameters *init);
  */
 XTDC4_API xtdc4_device *xtdc4_init(xtdc4_init_parameters *params, int *error_code, const char **error_message);
 /*!@}*/
+
+/*! \ingroup deferror
+ *  \brief read error codes
+ *
+ *  assignments of the error codes for the xtdc4_read
+ *  @{
+ */
+#define CRONO_READ_OK 0
+#define CRONO_READ_NO_DATA 1
+#define CRONO_READ_INTERNAL_ERROR 2 //!< Error in buffer handling, must restart
+#define CRONO_READ_TIMEOUT 3        //!< Not used yet
 
 /*! \ingroup readin
  *  \brief The parameters of the read commands
