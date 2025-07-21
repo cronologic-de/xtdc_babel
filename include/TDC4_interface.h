@@ -78,11 +78,10 @@
 #define TDC4_BITSTREAM_DATE_LEN 20
 
 /**
- * Maximum and minimum dc offsets for TDC4 in Volt. 
+ * Maximum and minimum dc offsets for TDC4 in Volt.
  */
 #define TDC4_DC_OFFSET_MAX 1.18
 #define TDC4_DC_OFFSET_MIN -1.32
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -426,12 +425,12 @@ typedef struct {
 
     /*! \brief Veto function
      *
-     *  only timestamps >= start are recorded.
+     *  only timestamps (bins) >= start are recorded.
      */
     uint32_t start;
     /*! \brief Veto function
      *
-     *  only timestamps <= stop are recorded.
+     *  only timestamps (bins) <= stop are recorded.
      */
     uint32_t stop;
 
