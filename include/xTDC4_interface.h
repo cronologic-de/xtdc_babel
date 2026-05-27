@@ -521,39 +521,7 @@ XTDC4_API int xtdc4_continue_capture(xtdc4_device *device);
  */
 XTDC4_API int xtdc4_stop_capture(xtdc4_device *device);
 
-/*! \ingroup runtime
- *  \brief get current state of channel histogram, channel 0 is sync, 1 - 4
- *  channels A - D
- *
- *  \param *device is type @link xtdc4_device xtdc4_device @endlink
- *  \param *channel is type int
- */
-XTDC4_API int xtdc4_get_histogram_state(xtdc4_device *device, int channel);
 
-/*! \ingroup runtime
- *  \brief read given histogram entry, channel 0 is sync, 1 - 4 channels A - D
- *
- *  \param *device is type @link xtdc4_device xtdc4_device @endlink
- *  \param *channel is type int
- *  \param *entry is type int
- */
-XTDC4_API int xtdc4_get_histogram_data(xtdc4_device *device, int channel, int entry);
-
-/*! \ingroup runtime
- *  \brief start recording histogram, channel 0 is sync, 1 - 4 channels A - D
- *
- *  \param *device is type @link xtdc4_device xtdc4_device @endlink
- *  \param *channel is type int
- */
-XTDC4_API int xtdc4_start_histogram(xtdc4_device *device, int channel);
-
-/*! \ingroup runtime
- *  \brief stop recording histogram, channel 0 is sync, 1 - 4 channels A - D
- *
- *  \param *device is type @link xtdc4_device xtdc4_device @endlink
- *  \param *channel is type int
- */
-XTDC4_API int xtdc4_stop_histogram(xtdc4_device *device, int channel);
 
 /*! \ingroup deferror
  *  \brief error code
@@ -775,34 +743,7 @@ typedef tdc4_read_out xtdc4_read_out;
  */
 XTDC4_API int xtdc4_read(xtdc4_device *device, xtdc4_read_in *in, xtdc4_read_out *out);
 
-/*! \ingroup conffuncts
- *  \brief Sets the offsets of FPGA-TDC and main TDC. iserdesOffset[0..3]
- *  are the values for ch A..D.
- *
- *  The values are stored inside the flash PROM, if the calibration PROM is
- *  flashed after setting values. \param *device is type xtdc4_device \param
- *  *iserdesOffset is type short[4]
- */
-XTDC4_API int xtdc4_set_CC_offsets(xtdc4_device *device, short *iserdesOffset);
 
-/*! \ingroup conffuncts
- *  \brief Reads the current offsets of FPGA-TDC and main TDC.
- *  iserdesOffset[0..3] are the values for ch A..D.
- *
- *  \param *device is type xtdc4_device
- *  \param *iserdesOffset is type short[4]
- */
-XTDC4_API int xtdc4_get_current_CC_offsets(xtdc4_device *device, short *iserdesOffset);
-
-/*! \ingroup conffuncts
- *  \brief Gets the offsets of FPGA-TDC and main TDC measured using the last
- *  1024 hits recorded. iserdesOffset[0..3] are the values for ch A..D.
- *
- *  \param *device is type xtdc4_device
- *  \param *offsets_new is type bool[4]
- *  \param *iserdesOffset is type short[4]
- */
-XTDC4_API int xtdc4_get_measured_CC_offsets(xtdc4_device *device, bool *offsets_new, short *iserdesOffset);
 
 /*! \ingroup statfuncts
  *  \brief Returns the driver version, same format as
